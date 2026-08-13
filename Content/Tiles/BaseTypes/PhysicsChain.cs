@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.FoliageLayerSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,9 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 		/// <param name="spriteBatch">The spriteBatch to draw with</param>
 		/// <param name="worldPos">The world position of this segment</param>
 		/// <param name="nextPos">The world position of the next segment, or this segment if its the last</param>
-		public virtual void PerPointDraw(SpriteBatch spriteBatch, Vector2 worldPos, Vector2 nextPos) { }
+		public virtual void PerPointDraw(SpriteBatch spriteBatch, Vector2 worldPos, Vector2 nextPos, Vector2 prevPos, int index, int length) { }
+
+		public virtual void PerPointUpdate(Vector2 worldPos, Vector2 nextPos, Vector2 prevPos, int index, int length) { }
 
 		public override bool RightClick(int i, int j)
 		{
@@ -67,11 +70,11 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 
 		public Point16 lastFrame;
 
-		public ChainDummy() : base() { }
+		public ChainDummy() : base(0, 16, 16) { }
 
 		private void BuildChain()
 		{
-			endPoint = Center + new Vector2(Parent.TileFrameX, Parent.TileFrameY) * 16 + Vector2.One * 8;
+			endPoint = Center + new Vector2(Parent.TileFrameX, Parent.TileFrameY) * 16;
 
 			int segments = (int)(Vector2.Distance(Center, endPoint) / parentSingleton.segmentLength * parentSingleton.segmentLengthMultiplier);
 
@@ -85,9 +88,12 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 					drag = 1.01f,
 					constraintRepetitions = 30
 				};
-			}
 
-			chain?.IterateRope(k => chain.ropeSegments[k].posNow = Vector2.Lerp(Center, endPoint, k / (float)segments));
+				chain.Start();
+
+				chain.IterateRope(k => chain.ropeSegments[k].posNow = Vector2.Lerp(Center, endPoint, k / (float)(segments - 1)));
+				chain.IterateRope(k => chain.ropeSegments[k].posOld = Vector2.Lerp(Center, endPoint, k / (float)(segments - 1)));
+			}
 
 			lastFrame = new(Parent.TileFrameX, Parent.TileFrameY);
 		}
@@ -99,29 +105,13 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 
 		public override void PostDraw(Color lightColor)
 		{
-			chain?.IterateRope(k => parentSingleton.PerPointDraw(Main.spriteBatch, chain.ropeSegments[k].posNow, k == chain.segmentCount - 1 ? chain.ropeSegments[k].posNow : chain.ropeSegments[k + 1].posNow));
-
-			if (StarlightRiver.debugMode)
-			{
-				chain?.IterateRope(k =>
-				{
-					Vector2 pos = chain.ropeSegments[k].posNow;
-					Vector2 lerped = Vector2.Lerp(Center, endPoint, k / (float)chain.segmentCount);
-					Main.instance.TilesRenderer.Wind.GetWindTime((int)pos.X / 16, (int)pos.Y / 16, 20, out int windTimeLeft, out int directionX, out int directionY);
-					Vector2 wind = new Vector2(directionX, directionY) * (windTimeLeft / 20f) * 2f;
-					wind.X += Main.windSpeedCurrent * (Math.Abs(pos.Y - lerped.Y) / 180f);
-
-					Texture2D tex = Assets.MagicPixel.Value;
-					Main.spriteBatch.Draw(tex, new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)(wind.Length() * 64f), 1), null, new Color(0.5f + wind.X, 0.5f + wind.Y, 0), wind.ToRotation(), Vector2.Zero, 0, 0);
-
-					if (k > 0)
-					{
-						float dist = Vector2.Distance(chain.ropeSegments[k].posNow, chain.ropeSegments[k - 1].posNow) / parentSingleton.segmentLength;
-						var color = new Color(Math.Abs(dist - 1), 0f, 0f);
-						Main.spriteBatch.Draw(tex, new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), 4, 4), null, color, 0f, Vector2.One * 2, 0, 0);
-					}
-				});
-			}
+			chain?.IterateRope(k => parentSingleton.PerPointDraw(
+				Main.spriteBatch, 
+				chain.ropeSegments[k].posNow, 
+				k == chain.segmentCount - 1 ? chain.ropeSegments[k].posNow : chain.ropeSegments[k + 1].posNow,
+				k == 0 ? chain.ropeSegments[k].posNow : chain.ropeSegments[k - 1].posNow,
+				k,
+				chain.segmentCount));
 		}
 
 		public override void Update()
@@ -135,14 +125,27 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 			{
 				Vector2 pos = chain.ropeSegments[k].posNow;
 				Vector2 lerped = Vector2.Lerp(Center, endPoint, k / (float)chain.segmentCount);
+
+				float res = MathF.Sin(k / (float)chain.segmentCount * 3.14f);
+
+				if (pos.X < 0 || pos.Y < 0 || float.IsNaN(pos.X) || float.IsNaN(pos.Y))
+					return;
+
 				Main.instance.TilesRenderer.Wind.GetWindTime((int)pos.X / 16, (int)pos.Y / 16, 20, out int windTimeLeft, out int directionX, out int directionY);
 				Vector2 wind = new Vector2(directionX, directionY) * (windTimeLeft / 20f) * 2f;
-				wind.X += Main.windSpeedCurrent * (Math.Abs(pos.Y - lerped.Y) / 180f);
+				wind.X += (Main.windSpeedCurrent + MathF.Sin(Main.windCounter * 0.12f + pos.X * 0.01f) * Main.windSpeedCurrent * 0.8f) * (Math.Abs(pos.Y - lerped.Y) / 180f);
 
-				chain.ropeSegments[k].posNow += wind;
+				chain.ropeSegments[k].posNow += wind * res;
 			});
 
 			chain?.UpdateChain(Center, endPoint);
+
+			chain?.IterateRope(k => parentSingleton.PerPointUpdate(
+				chain.ropeSegments[k].posNow,
+				k == chain.segmentCount - 1 ? chain.ropeSegments[k].posNow : chain.ropeSegments[k + 1].posNow,
+				k == 0 ? chain.ropeSegments[k].posNow : chain.ropeSegments[k - 1].posNow,
+				k,
+				chain.segmentCount));
 		}
 	}
 }

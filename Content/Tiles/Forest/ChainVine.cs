@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			segmentLengthMultiplier = 1.25f;
 		}
 
-		public override void PerPointDraw(SpriteBatch spriteBatch, Vector2 worldPos, Vector2 nextPos)
+		public override void PerPointDraw(SpriteBatch spriteBatch, Vector2 worldPos, Vector2 nextPos, Vector2 prevPos, int index, int length)
 		{
 			Texture2D tex = Assets.Tiles.Forest.ForestBerryBushItem.Value;
 			FoliageLayerSystem.overTilesData.Add(new(tex, worldPos, null, new Color(Lighting.GetSubLight(worldPos)), worldPos.DirectionTo(nextPos).ToRotation(), tex.Size() / 2f, 1f, 0, 0));
