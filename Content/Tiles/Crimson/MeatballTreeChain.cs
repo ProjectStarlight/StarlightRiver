@@ -39,6 +39,30 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				Dust.NewDustPerfect(worldPos, DustID.Water_Crimson, Vector2.UnitX * Main.windSpeedCurrent * 5);
 		}
 
+		public override void SafeNearbyEffects(int i, int j, bool closer)
+		{
+			bool startOK = false;
+			bool endOK = false;
+
+			for (int x = -1; x <= 1; x++)
+			{
+				for (int y = -1; y <= 1; y++)
+				{
+					Tile startScan = Framing.GetTileSafely(i + x, j + y);
+					Tile endScan = Framing.GetTileSafely(i + x, j + y);
+
+					if (startScan.HasTile && startScan.TileType == ModContent.TileType<MeatballTreeTopper>())
+						startOK = true;
+
+					if (endScan.HasTile && endScan.TileType == ModContent.TileType<MeatballTreeTopper>())
+						endOK = true;
+				}
+			}
+
+			if (!startOK || !endOK)
+				WorldGen.KillTile(i, j);
+		}
+
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
 			bool startOK = false;

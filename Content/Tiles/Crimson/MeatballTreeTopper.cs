@@ -81,6 +81,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			if (type == TileID.Trees)
 			{
 				var up = Framing.GetTileSafely(i, j - 1);
+				var down = Framing.GetTileSafely(i, j + 1);
 
 				if (up.HasTile && up.TileType == ModContent.TileType<MeatballTreeTopper>())
 				{
@@ -88,6 +89,9 @@ namespace StarlightRiver.Content.Tiles.Crimson
 					Framing.GetTileSafely(i, j).TileFrameY = 0;
 
 					WorldGen.TileFrame(i, j - 1);
+
+					if (!down.HasTile || down.TileType != TileID.Trees)
+						WorldGen.KillTile(i, j);
 
 					return false;
 				}
