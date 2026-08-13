@@ -42,7 +42,7 @@ namespace StarlightRiver.Core
 							y = 10;
 						}
 
-						if (WorldGen.genRand.NextBool(20))
+						if (WorldGen.genRand.NextBool(12))
 						{
 							WorldGen.PlaceTile(k, y - 1, ModContent.TileType<BigSpike>());
 
@@ -107,6 +107,7 @@ namespace StarlightRiver.Core
 			}
 
 			// Gestalt arena
+			/*
 			bool generated = false;
 
 			for (int x = Main.maxTilesX / 2; x < Main.maxTilesX - 100; x++)
@@ -190,7 +191,7 @@ namespace StarlightRiver.Core
 					if (generated)
 						break;
 				}
-			}
+			}*/
 
 			ScanAndJoinTrees();
 		}

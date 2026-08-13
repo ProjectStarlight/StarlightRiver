@@ -66,6 +66,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void AI()
 		{
+			if (!thinker.active || thinker.type != ModContent.NPCType<TheThinker>())
+				NPC.active = false;
+
+			if (thinker?.ModNPC is TheThinker think && (!think.brain.active || think.brain.type != ModContent.NPCType<DeadBrain>()))
+				NPC.active = false;
+
 			NPC.realLife = thinker?.whoAmI ?? NPC.realLife;
 
 			float r = 0.9f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;
