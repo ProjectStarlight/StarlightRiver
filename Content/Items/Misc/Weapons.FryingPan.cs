@@ -380,7 +380,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Projectile.width = 20;
 			Projectile.height = 20;
-			Projectile.aiStyle = 3;
+			Projectile.aiStyle = ProjAIStyleID.Boomerang;
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Melee;
 			Projectile.penetrate = -1;

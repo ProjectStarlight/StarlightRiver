@@ -1,4 +1,4 @@
-using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.width = 8;
 			Projectile.height = 12;
 			Projectile.extraUpdates = 1;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.Bullet;
 		}
 		public override void AI()

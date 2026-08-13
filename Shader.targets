@@ -1,6 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
-  <!--TODO: Figure out why this condition prevents VS from removing new items from the ShaderFile group.-->
+<!--TODO: Figure out why this condition prevents VS from removing new items from the ShaderFile group.-->
   <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
     <ShaderFile Include="**\*.fx" />
   </ItemGroup>

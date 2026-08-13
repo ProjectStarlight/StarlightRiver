@@ -153,8 +153,11 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void OnKill(int timeLeft)
 		{
-			for (int k = 1; k <= 5; k++)
-				Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("BreachCannonSentryGore" + k).Type);
+			if (Main.netMode != NetmodeID.Server)
+			{
+				for (int k = 1; k <= 5; k++)
+					Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("BreachCannonSentryGore" + k).Type);
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)

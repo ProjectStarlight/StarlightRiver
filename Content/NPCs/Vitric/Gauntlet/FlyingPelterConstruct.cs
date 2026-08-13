@@ -578,7 +578,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 			else if (!Main.dedServ)
 			{
-				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), DustID.Torch, null, 0, default, 1.1f);
 			}
 		}
 

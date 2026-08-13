@@ -307,8 +307,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			Dummy dummy = DummyTile.GetDummy((int)(x / 16), (int)(y / 16), type);
 
-			if (dummy != null)
-				dummy.active = false;
+			dummy?.active = false;
 		}
 	}
 }

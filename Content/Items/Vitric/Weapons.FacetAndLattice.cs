@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetDefaults()
 		{
 			Item.DamageType = DamageClass.Melee;
-			Item.damage = 45;
+			Item.damage = 55;
 			Item.crit = 15;
 			Item.useTime = 30;
 			Item.useAnimation = 30;

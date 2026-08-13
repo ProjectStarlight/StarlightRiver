@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 	{
 		int type = 1;
 
-		public override string Texture => "StarlightRiver/Assets/NPCs/BossRush/Gore/Rock1";
+		public override string Texture => "StarlightRiver/Assets/NPCs/BossRush/Gores/Rock1";
 
 		public override void SetDefaults()
 		{
@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Color color = Color.Cyan;
 			color.R += 128;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gore/Rock" + type.ToString()).Value;
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gore/RockGlow" + type.ToString()).Value;
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gores/Rock" + type.ToString()).Value;
+			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gores/RockGlow" + type.ToString()).Value;
 			Texture2D bloom = Assets.Masks.Glow.Value;
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);

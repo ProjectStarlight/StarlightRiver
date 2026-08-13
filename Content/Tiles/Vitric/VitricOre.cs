@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -54,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
-			if (Main.rand.NextBool(50))
+			if (Main.rand.NextBool(200))
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
 
@@ -201,13 +202,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	}
 
 	[SLRDebug]
-	class VitricOreItem : QuickTileItem
+	class VitricOreItem : BaseTileItem
 	{
 		public VitricOreItem() : base("Vitric Ore Crystal Item", "", "VitricOre", 1, AssetDirectory.VitricTile, false) { }
 	}
 
 	[SLRDebug]
-	class VitricOreFloatItem : QuickTileItem
+	class VitricOreFloatItem : BaseTileItem
 	{
 		public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", "VitricOreFloat", 1, AssetDirectory.VitricTile, false) { }
 	}

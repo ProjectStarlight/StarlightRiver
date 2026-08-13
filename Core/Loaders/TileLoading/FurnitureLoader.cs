@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;
@@ -70,7 +71,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 	}
 
 	[Autoload(false)]
-	class GenericFurnitureItem : QuickTileItem
+	class GenericFurnitureItem : BaseTileItem
 	{
 		private readonly string name;
 		private readonly int craftingQuantity;
@@ -95,7 +96,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override void SafeSetDefaults()
 		{
-			Item.maxStack = 99;
+			Item.maxStack = 9999;
 			Item.value = 30;
 		}
 
@@ -791,7 +792,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			if (player.cursorItemIconText == "")
 			{
 				player.cursorItemIconEnabled = false;
-				player.cursorItemIconID = 0;
+				player.cursorItemIconID = ItemID.None;
 			}
 		}
 

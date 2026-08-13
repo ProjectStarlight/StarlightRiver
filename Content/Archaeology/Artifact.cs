@@ -95,10 +95,7 @@ namespace StarlightRiver.Content.Archaeology
 			{
 				displayedOnMap = tag.GetBool(nameof(displayedOnMap));
 				bounds = new Rectangle((int)WorldPosition.X, (int)WorldPosition.Y, (int)Size.X, (int)Size.Y);
-				texture = ModContent.Request<Texture2D>(TexturePath);
-
-				if (texture is null)
-					throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
+				texture = ModContent.Request<Texture2D>(TexturePath) ?? throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
 
 				ArtifactManager.artifacts.Add(this);
 			}

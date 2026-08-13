@@ -334,7 +334,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Projectile.width = 30;
 			Projectile.height = 30;
-			Projectile.aiStyle = 3;
+			Projectile.aiStyle = ProjAIStyleID.Boomerang;
 			Projectile.friendly = false;
 			Projectile.DamageType = DamageClass.Melee;
 			Projectile.penetrate = -1;

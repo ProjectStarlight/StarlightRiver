@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			NPC.dontTakeDamage = tentacle.State != 0;
 
-			if (Parent.NPC.life < Parent.NPC.lifeMax - tentacle.NPC.lifeMax * 4)
+			if (Parent.NPC.life < Parent.NPC.lifeMax * 0.5f)
 				NPC.dontTakeDamage = true;
 		}
 

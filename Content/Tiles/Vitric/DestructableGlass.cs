@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -70,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	internal class DestructableGlassItem : QuickTileItem
+	internal class DestructableGlassItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricGlassItem";
 

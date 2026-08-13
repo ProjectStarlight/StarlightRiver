@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Moonstone;
 using Terraria.ID;
 
@@ -76,7 +77,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 				//vanilla dye plants have seperate tiles for each stage, but share the same tile for each plant type
 				case 82://first stage
 					{
-						Main.tile[i, j].TileType = 83;
+						Main.tile[i, j].TileType = TileID.MatureHerbs;
 						NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 					}
 
@@ -91,11 +92,11 @@ namespace StarlightRiver.Content.Tiles.Herbology
 								if (Main.IsItDay())
 								{
 									if (Main.rand.NextBool(3))
-										Main.tile[i, j].TileType = 84;
+										Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 								else if (Main.rand.NextBool(baseChance))
 								{
-									Main.tile[i, j].TileType = 84;
+									Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 
 								break;
@@ -104,29 +105,29 @@ namespace StarlightRiver.Content.Tiles.Herbology
 								if (!Main.IsItDay())
 								{
 									if (Main.rand.NextBool(3))
-										Main.tile[i, j].TileType = 84;
+										Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 								else if (Main.rand.NextBool(baseChance))
 								{
-									Main.tile[i, j].TileType = 84;
+									Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 
 								break;
 
 							case 36://blinkroot
 								if (Main.rand.NextBool(6))
-									Main.tile[i, j].TileType = 84;
+									Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								break;
 
 							case 54://deathweed
 								if (Main.bloodMoon || Main.GetMoonPhase() == Terraria.Enums.MoonPhase.Full)
 								{
 									if (Main.rand.NextBool(2))
-										Main.tile[i, j].TileType = 84;
+										Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 								else if (Main.rand.NextBool(baseChance))
 								{
-									Main.tile[i, j].TileType = 84;
+									Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 
 								break;
@@ -135,11 +136,11 @@ namespace StarlightRiver.Content.Tiles.Herbology
 								if (Main.raining || Main.tile[i, j].LiquidType == LiquidID.Water && Main.tile[i, j].LiquidAmount > 0)
 								{
 									if (Main.rand.NextBool(3))
-										Main.tile[i, j].TileType = 84;
+										Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 								else if (Main.rand.NextBool(baseChance))
 								{
-									Main.tile[i, j].TileType = 84;
+									Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 
 								break;
@@ -148,27 +149,27 @@ namespace StarlightRiver.Content.Tiles.Herbology
 								if (Main.tile[i, j].LiquidType == LiquidID.Lava && Main.tile[i, j].LiquidAmount > 0)//vanilla does not use the lava check anymore
 								{
 									if (Main.rand.NextBool(2))
-										Main.tile[i, j].TileType = 84;
+										Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 								else if (!Main.raining && Main.IsItDay())//vanilla uses sunset instead of daytime
 								{
 									if (Main.rand.NextBool(4))
-										Main.tile[i, j].TileType = 84;
+										Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 								else if (Main.rand.NextBool(baseChance))
 								{
-									Main.tile[i, j].TileType = 84;
+									Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								}
 
 								break;
 
 							case 108://shiverthorn
 								if (Main.rand.NextBool(8))//wiki just says 'after enough time has passed', so chance here is lower than blinkroot which says 'at random'
-									Main.tile[i, j].TileType = 84;
+									Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								break;
 
 							default:
-								Main.tile[i, j].TileType = 84;
+								Main.tile[i, j].TileType = TileID.BloomingHerbs;
 								break;
 						}
 
@@ -224,7 +225,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 		}
 	}
 
-	public class GreenhouseGlassItem : QuickTileItem
+	public class GreenhouseGlassItem : BaseTileItem
 	{
 		public GreenhouseGlassItem() : base("Greenhouse Glass", "Speeds up the growth of any plant below it\nNeeds a 10 blocks of clear area or transparent blocks above it", "GreenhouseGlass", 1, AssetDirectory.HerbologyTile) { }
 
@@ -254,7 +255,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 		}
 	}
 
-	public class GreenhouseWallItem : QuickWallItem
+	public class GreenhouseWallItem : BaseWallItem
 	{
 		public GreenhouseWallItem() : base("Greenhouse Glass Wall", "Fancy!", ModContent.WallType<GreenhouseWall>(), 0, AssetDirectory.HerbologyTile) { }
 

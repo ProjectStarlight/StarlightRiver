@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 using Terraria.Localization;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
@@ -95,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
-	public class OvergrowthLivingWoodItem : QuickTileItem
+	public class OvergrowthLivingWoodItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + Name;
 

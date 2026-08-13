@@ -13,14 +13,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	{
 		public override string Texture => AssetDirectory.VitricBoss + Name;
 
-		public override void Load()
-		{
-			for (int k = 0; k < 4; k++)
-			{
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricBoss + "Gore/Mine" + k);
-			}
-		}
-
 		public override void SetDefaults()
 		{
 			Projectile.width = 46;

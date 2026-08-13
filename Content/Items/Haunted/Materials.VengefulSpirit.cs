@@ -1,11 +1,12 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Haunted
 {
-	public class VengefulSpirit : QuickMaterial
+	public class VengefulSpirit : BaseMaterial
 	{
 		private static LocalizedText DropConditionText;
 		public override void Load()
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			DropConditionText.SetDefault("Dropped after beating either King Slime, Eye of Cthulhu, or Auroracle");
 		}
 
-		public VengefulSpirit() : base("Vengeful Spirit", "", 999, 75, ItemRarityID.Green, AssetDirectory.HauntedItem) { }
+		public VengefulSpirit() : base("Vengeful Spirit", "", 75, ItemRarityID.Green, AssetDirectory.HauntedItem) { }
 
 		public static void DropVengefulSpirit(NPC npc, NPCLoot npcLoot)
 		{

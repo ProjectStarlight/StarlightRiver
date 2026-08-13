@@ -1,34 +1,20 @@
-﻿# Starlight River 0.3.0
-
-## Flagship Content
-- Added a new optional boss, The Thinker! This boss can be challenged in a crimson world at any point after the Brain of Cthulhu has been defeated, but is intended for players that have atleast visited the dungeon.
-- After defeating the Brain of Cthulhu, some strange bits of material will activate in the crimson. Will you be able to use it to your advantage, or simply go mad?
+﻿# Starlight River 0.2.9
 
 ## Content
 - Added the heavy flail and frost flail, melee weapons with a heavy overhead swing
 - Added Misery's Company, a cursed accessory that shares your defense and innoculation with your foes
 - New Magic Weapon: Talismans
 - New Magic Weapon: Spirit Seal
+- New Melee Weapon: Viewfinder
+- New Magic Weapon: Plasma Cutter
 - The player's introduction to Starlight has changed significantly. Rather than alican causing an event requiring the player to return to the center of the world,
   he will now reside in a new structure on the surface. Once a boss is defeated, you will be able to enter and talk to him.
 - Updated the visuals and structures leading up to Auroracle
-- The player can now seek out 3 special starlight vessel shards to increase their maximum starlight
-- The following are spoilers for the crimson biome
-||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
-- Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
-||
-- The following are spoilers for The Thinker
-||- Added the bear poker, which can be used to spawn The Thinker
-- Added the lobotolizer, a spear which can throw a hallucinatory copy of itself to engage a more offensive attack mode
-- Added the mirage bow, which creates a copy of its user on critical hits reflected across their mouse
-- Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
-- Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
-- Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura
-||
 
 ## Gameplay features
 - Added a pool of unique 'cursed' prefixes for accessories, with up and downsides. All cursed accessories now only pull from this pool.
 - You can gamble on applying one of these cursed prefixes to a normal item with a Drop of Darkness.
+- Added a pylon in auroracle's arena that will activate when you first encoutner it
 
 ## UI
 - Updated the defensive stat UI to better show various features of the mod and vanilla. You can click the defense icon in the inventory to expand the new UI
@@ -40,7 +26,8 @@
 
 ## Balance
 - ↑ Base barrier recharge rate has increased from 6 to 10
-- ↑ Facet and lattice damage 47 => 45, crit 10% => 19%, max buff multiplier 3x => 3.5x
+- ↑ Bloodbolter's unique arrows no longer has restrictions on what enemies can expode, and has a 5% chance to explode when hitting a boss
+- ↑ Facet and lattice damage 47 => 55, crit 10% => 19%, max buff multiplier 3x => 3.5x
 - ↑ Coalescence damage 44 => 50
 - ↑ Refractive blade laser damage 5% of base => 25% of base
 - ↑ Phoeenix storm damage 40 => 60
@@ -51,6 +38,7 @@
 - ↑ Electro arrows can now hit up to 4 targets, chain randomly instead of failing to chain if targets are already debuffed, and have refreshed audiovisual effects
 - = Man eater pot now uses local immunity
 - = All manabonds now use local immunity
+- = Shattered aegis' damage now scales with your defense instead of damage taken
 - ↓ Corpseflower damage penalty 55% => 65%
 - ↓ Druidic manabond now requires beeswax (queen bee drop) to craft
 - ↓ Palestone nail now requires demonite/crimtane bars to craft instead of silver/tungsten
@@ -63,6 +51,9 @@
 - When holding an uncharged magnet, charged enemies spawn twice as often as previously
 - Loot wraiths are more common
 - Living blood drops more often
+
+## Misc
+- Various visual effects throughout the mod have been updated
 
 ## Fixes
 - Fixed an issue where all stackable buffs failed to sync in multiplayer
@@ -79,3 +70,14 @@
 ## Boring programmer stuff
 - Keywords now utilize localization and are data driven similar to dialogue and hints
 - Untied the text cards from the ability system to unwind a longstanding issue with it persisting after the intended period
+
+# Starlight River 0.2.9.2
+
+## Fixes
+- Fixed coalescence sending debug messages to the chat
+- Fixed the "full" debuff being dismissable
+- Fixed an issue where auroracle's tentacles would check an incorrect HP threshold, causing them to be unable to be damaged on some difficulties
+- Fixed an issue where ceiros' platforms would fail to trigger their explosion timer on master mode
+
+## Tweaks
+- Improved visual and audio feedback for platform explosions during Ceiros' master mode fight

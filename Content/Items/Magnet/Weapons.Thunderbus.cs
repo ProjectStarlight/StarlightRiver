@@ -209,9 +209,6 @@ namespace StarlightRiver.Content.Items.Magnet
 		private List<Vector2> cache;
 		private Trail trail;
 
-		private float dist1;
-		private float dist2;
-
 		readonly List<Vector2> nodes = new();
 
 		public ref float TargetID => ref Projectile.ai[0];

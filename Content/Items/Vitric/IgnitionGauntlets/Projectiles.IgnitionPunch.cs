@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 			for (int i = 0; i < 7; i++)
 			{
-				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
+				Dust.NewDustPerfect(Projectile.Center, DustID.Torch, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
 			}
 
 			if (Owner.GetModPlayer<IgnitionPlayer>().charge < 150)

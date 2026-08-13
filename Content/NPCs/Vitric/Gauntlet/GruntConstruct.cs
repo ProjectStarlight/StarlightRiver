@@ -51,19 +51,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override Vector2 PreviewOffset => new(8, 6);
 
-		public override void Load()
-		{
-			for (int k = 1; k <= 17; k++)
-			{
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/ConstructGore" + k);
-			}
-
-			for (int j = 1; j <= 3; j++)
-			{
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/GruntSwordGore" + j);
-			}
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grunt Construct");

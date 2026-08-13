@@ -17,12 +17,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/Snake";
 
-		public override void Load()
-		{
-			for (int k = 0; k <= 5; k++)
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sandviper");
@@ -54,6 +48,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			return ActionState == 3 && base.CanHitPlayer(target, ref cooldownSlot);
+		}
+
+		public override bool? CanBeHitByItem(Player player, Item item)
+		{
+			return ActionState != 0 ? null : false;
+		}
+
+		public override bool? CanBeHitByProjectile(Projectile projectile)
+		{
+			return ActionState != 0 ? null : false;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -139,7 +143,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						NPC.frame.Y = NPC.height * (7 - (int)((ActionTimer - 30) / 20f * 5));
 
 					if (ActionTimer == 20 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), StarlightMathHelper.GetProjectileDamage(20, 40, 80), 0.2f, Main.myPlayer);
 
 					if (ActionTimer == 140)
 						ChangeState(2, 2);
@@ -224,8 +228,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + Vector2.UnitY * 2, NPC.frame, drawColor, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-			spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos + Vector2.UnitY * 2, NPC.frame, Color.White, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+			if (ActionState != 0)
+			{
+				spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + Vector2.UnitY * 2, NPC.frame, drawColor, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+				spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos + Vector2.UnitY * 2, NPC.frame, Color.White, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+			}
+
 			return false;
 		}
 	}

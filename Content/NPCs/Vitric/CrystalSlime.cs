@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.value = 10f;
 			NPC.knockBackResist = 0.6f;
-			NPC.aiStyle = 1;
+			NPC.aiStyle = NPCAIStyleID.Slime;
 			NPC.immortal = true;
 		}
 

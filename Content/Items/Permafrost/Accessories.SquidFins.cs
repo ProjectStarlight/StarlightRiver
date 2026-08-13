@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			bool canSwim = player.grapCount <= 0 && player.wet && !player.mount.Active;
 			player.GetModPlayer<SwimPlayer>().ShouldSwim = canSwim;
-			player.GetModPlayer<SwimPlayer>().SwimSpeed = 1.33f + player.moveSpeed * 1.33f;
+			player.GetModPlayer<SwimPlayer>().SwimSpeed += 3f + player.moveSpeed * 1.33f;
 		}
 
 		private void DrawSquidFins(ref PlayerDrawSet drawInfo)

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -23,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	}
 
 	[SLRDebug]
-	class ForgeDoorItem : QuickTileItem
+	class ForgeDoorItem : BaseTileItem
 	{
 		public ForgeDoorItem() : base("Forge Door", "{{Debug}} Item", "ForgeDoor", 1, AssetDirectory.Debug, true) { }
 	}

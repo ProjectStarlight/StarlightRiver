@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.penetrate = 1;
 			distanceToExplode = Main.rand.Next(145, 175);
 
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.Bullet;
 		}
 

@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
@@ -31,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Fountain");
 			AddMapEntry(new Color(140, 97, 86), name);
-			DustType = 0;
+			DustType = DustID.Dirt;
 			HitSound = SoundID.Dig;
 			RegisterItemDrop(ModContent.ItemType<TempleWallCandleItem>());
 			AnimationFrameHeight = 36;
@@ -54,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	public class TempleCeirosFountainItem : QuickTileItem
+	public class TempleCeirosFountainItem : BaseTileItem
 	{
 		public TempleCeirosFountainItem() : base("Temple Sentinel Fountain", "", "TempleCeirosFountain", ItemRarityID.White, "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/") { }
 	}

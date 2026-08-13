@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -60,53 +62,24 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override bool CheckDead()
 		{
-			if (dying)
+			SoundHelper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
+
+			for (int i = 0; i < 8; i++)
 			{
-				SoundHelper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
-				for (int i = 0; i < 8; i++)
-				{
-					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
-					dust.velocity = Main.rand.NextVector2Circular(3, 3);
-					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-					dust.alpha = 70 + Main.rand.Next(60);
-					dust.rotation = Main.rand.NextFloat(6.28f);
-				}
-
-				for (int i = 0; i < 8; i++)
-				{
-					Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
-					Dust.NewDustPerfect(NPC.Center + dir * 45, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.85f, 1.45f));
-				}
-
-				for (int i = 0; i < 8; i++)
-				{
-					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
-					dust.velocity = Main.rand.NextVector2Circular(3, 3);
-					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-					dust.alpha = Main.rand.Next(80) + 40;
-					dust.rotation = Main.rand.NextFloat(6.28f);
-
-					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
-				}
-
-				for (int i = 0; i < 3; i++)
-				{
-					Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3);
-					var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
-					proj.friendly = false;
-					proj.hostile = true;
-					proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
-				}
-
-				Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), 60, 4, Target.whoAmI);
-				return true;
+				Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
+				Dust.NewDustPerfect(NPC.Center + dir * 24, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.65f, 1.15f));
 			}
 
-			NPC.life = 1;
-			NPC.immortal = true;
-			NPC.dontTakeDamage = true;
-			dying = true;
-			return false;
+			for (int i = 0; i <= 4; i++)
+			{
+				float prog = i / 4f;
+				var dust = Dust.NewDustPerfect(NPC.Center - new Vector2(16, 16), ModContent.DustType<Dusts.PixelSmokeColor>(), Vector2.Zero, (int)((1f - prog) * 50), new Color(1, 0.5f + prog * 0.5f, prog * 0.5f), (1f - prog) * 0.25f);
+
+				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(3f, 3f), 0, new Color(255, 50, 0, 0), 0.2f);
+			}
+
+			Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), StarlightMathHelper.GetProjectileDamage(40, 80, 120), 4, Target.whoAmI, 50);
+			return true;
 		}
 
 		public override void AI()
@@ -131,14 +104,21 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (chargingMagma)
 			{
 				bugTimer = 0;
-				magmaCharge += 0.01f;
+				magmaCharge += 0.03f;
 				NPC.velocity.Y += TileGapDown() * 0.0005f;
 				NPC.velocity.X *= 0.95f;
 
 				Vector2 dustDir = Main.rand.NextVector2CircularEdge(1, 1);
 
-				if (magmaCharge < 1)
-					Dust.NewDustPerfect(new Vector2(NPC.spriteDirection * -8, 14) + NPC.Center + dustDir * 40, ModContent.DustType<Dusts.Glow>(), dustDir * -2, 0, Color.OrangeRed, magmaCharge);
+				if (magmaCharge < 1.6f)
+				{
+					float prog = magmaCharge / 1.75f;
+
+					Color color = Color.Lerp(Color.Red, Color.Orange, prog);
+					color.A = 0;
+
+					Dust.NewDustPerfect(new Vector2(NPC.spriteDirection * -8, 14) + NPC.Center + dustDir * (20 + 20 * (1f - prog)), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), dustDir * -2, 0, color, (1f - prog) * 0.1f);
+				}
 
 				if (magmaCharge > 1.75f)
 				{
@@ -147,7 +127,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					NPC.velocity = projVel * -1;
 					magmaCharge = 0;
 					chargingMagma = false;
-					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), 45, 4);
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), StarlightMathHelper.GetProjectileDamage(20, 40, 80), 4);
 				}
 			}
 			else
@@ -156,7 +136,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (bugTimer < 20)
 					NPC.velocity *= 0.9f;
 
-				if (++bugTimer % 190 == 0)
+				if (++bugTimer % 120 == 0)
 					NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<LesserFirebug>(), 0, NPC.whoAmI);
 
 				if (TileGapDown() < 15 && TileGapUp() > 5)
@@ -169,13 +149,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				NPC.velocity.X += Math.Sign(Target.Center.X - NPC.Center.X) * 0.1f;
 				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -6, 6);
 
-				if (bugTimer > 700)
+				if (bugTimer > 240)
 				{
 					NPC.velocity.Y = 0;
 					chargingMagma = true;
 				}
 			}
 		}
+
 		public override void FindFrame(int frameHeight)
 		{
 			if (!chargingMagma)
@@ -194,7 +175,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D magmaTex = Assets.Masks.GlowHarsh.Value;
+			Texture2D magmaTex = Assets.StarTexture.Value;
 
 			var magmaOffset = new Vector2(-13 * NPC.spriteDirection, 8);
 			SpriteEffects effects = SpriteEffects.None;
@@ -220,13 +201,19 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
 				}
 
-				for (int j = 0; j < 4; j++)
-				{
-					spriteBatch.Draw(magmaTex, magmaOffset + NPC.Center - screenPos, null, Color.OrangeRed, NPC.rotation, magmaTex.Size() / 2, NPC.scale * magmaCharge, effects, 0f);
-				}
-
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+				{
+					float prog = magmaCharge / 1.75f;
+
+					Color color = Color.Lerp(Color.OrangeRed, Color.Yellow, prog) * prog;
+					color.A = 0;
+
+					spriteBatch.Draw(magmaTex, magmaOffset + NPC.Center - screenPos, null, color, NPC.rotation + Eases.EaseCircularIn(prog) * 6.28f, magmaTex.Size() / 2, 0.1f + (1f - prog) * 0.4f, effects, 0f);
+					spriteBatch.Draw(magmaTex, magmaOffset + NPC.Center - screenPos, null, color, NPC.rotation + Eases.EaseCircularIn(prog) * 6.28f * 2f, magmaTex.Size() / 2, 0.1f + (1f - prog) * 0.3f, effects, 0f);
+				});
 			}
 
 			return false;
@@ -393,43 +380,19 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
 
-				for (int i = 0; i < 4; i++)
-				{
-					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
-					dust.velocity = Main.rand.NextVector2Circular(2, 2);
-					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-					dust.alpha = 70 + Main.rand.Next(60);
-					dust.rotation = Main.rand.NextFloat(6.28f);
-				}
-
 				for (int i = 0; i < 8; i++)
 				{
 					Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
 					Dust.NewDustPerfect(NPC.Center + dir * 24, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.65f, 1.15f));
 				}
 
-				for (int i = 0; i < 4; i++)
+				for (int i = 0; i <= 4; i++)
 				{
-					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
-					dust.velocity = Main.rand.NextVector2Circular(2, 2);
-					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-					dust.alpha = Main.rand.Next(80) + 40;
-					dust.rotation = Main.rand.NextFloat(6.28f);
+					float prog = i / 4f;
+					var dust = Dust.NewDustPerfect(NPC.Center - new Vector2(16, 16), ModContent.DustType<Dusts.PixelSmokeColor>(), Vector2.Zero, (int)((1f - prog) * 50), new Color(1, 0.5f + prog * 0.5f, prog * 0.5f), (1f - prog) * 0.1f);
 
-					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
+					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(255, 50, 0, 0), 0.2f);
 				}
-			}
-		}
-
-		public override void OnKill()
-		{
-			for (int i = 0; i < 2; i++)
-			{
-				Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
-				var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
-				proj.friendly = false;
-				proj.hostile = true;
-				proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
 			}
 		}
 
@@ -460,8 +423,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			Projectile.timeLeft = 180;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
-			Projectile.damage = 5;
-			Projectile.hide = true;
 		}
 
 		public override void SetStaticDefaults()
@@ -483,7 +444,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			SoundEngine.PlaySound(SoundID.Item45, Projectile.Center);
 			for (int k = 0; k <= 10; k++)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.5f);
+				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 7), 0, new Color(255, Main.rand.Next(100), 0, 0), 0.2f);
+				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 20, 0), 0.1f);
 				d.noGravity = false;
 			}
 		}
@@ -491,12 +453,25 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = Assets.Masks.GlowHarshAlpha.Value;
+			Texture2D texMain = Assets.Misc.Circle.Value;
 
-			for (int i = 0; i < oldPos.Count; i++)
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
 			{
-				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 70, 0, 0) * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
-				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 255, 255, 0) * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
-			}
+
+				Vector2 last = Projectile.Center;
+				for (int i = oldPos.Count - 1; i > 0; i--)
+				{
+					float prog = i / (float)oldPos.Count;
+					Vector2 target = last - oldPos[i].DirectionFrom(oldPos[i - 1]) * Math.Min(5, Projectile.velocity.Length());
+					last = target;
+
+					Main.spriteBatch.Draw(tex, target - Main.screenPosition, null, new Color(255, 100, 0, 0) * prog, 0, tex.Size() / 2, 1.2f * prog, 0, 0);
+					Main.spriteBatch.Draw(texMain, target - Main.screenPosition, null, new Color(255, 255, 200, 0) * prog, 0, texMain.Size() / 2, 0.2f * prog, 0, 0);
+				}
+
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100, 0, 0), 0, tex.Size() / 2f, 1.2f, 0, 0);
+				Main.spriteBatch.Draw(texMain, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 200, 0), 0, texMain.Size() / 2f, 0.2f, 0, 0);
+			});
 
 			return false;
 		}

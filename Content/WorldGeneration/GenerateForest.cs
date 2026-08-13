@@ -87,7 +87,7 @@ namespace StarlightRiver.Core
 
 						for (int j = (int)(Main.worldSurface * 0.35f); j < Main.worldSurface; j++) //Wall Bushes
 						{
-							if (Main.tile[k + x, j].WallType != 0 && Main.tile[k, j].WallType != WallType<LeafWall>())
+							if (Main.tile[k + x, j].WallType != WallID.None && Main.tile[k, j].WallType != WallType<LeafWall>())
 							{
 								surface = j;
 								break;
@@ -103,7 +103,7 @@ namespace StarlightRiver.Core
 						{
 							WorldGen.PlaceWall(k + x, y, WallType<LeafWall>(), true);
 
-							if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].WallType != 0)
+							if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].WallType != WallID.None)
 								break;
 						}
 

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.DataStructures;
@@ -31,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		}
 	}
 
-	internal class StaminaGemItem : QuickTileItem
+	internal class StaminaGemItem : BaseTileItem
 	{
 		public StaminaGemItem() : base("Starlight Gem", "Restores starlight when hit with an ability", "StaminaGem", 8, AssetDirectory.InteractiveTile) { }
 	}

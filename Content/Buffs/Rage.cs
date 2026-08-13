@@ -43,14 +43,17 @@
 			NPC.color.G -= 100;
 			NPC.color.B -= 100;
 
-			if (Main.rand.NextBool(12))
-				Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), ModContent.DustType<Dusts.Cinder>(), new Vector2(NPC.velocity.X, Main.rand.NextFloat(-1, 0)), 0, new Color(255, 50, 50), 0.5f);
+			if (Main.rand.NextBool(6))
+				Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), ModContent.DustType<Dusts.PixelatedEmber>(), new Vector2(NPC.velocity.X, Main.rand.NextFloat(-3, 0)), 0, new Color(255, Main.rand.Next(30), 0, 0), 0.2f);
 
 			Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.2f, 0.15f));
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
+			if (Main.rand.NextBool(6))
+				Dust.NewDustPerfect(Player.position + new Vector2(Main.rand.Next(Player.width), Main.rand.Next(Player.height)), ModContent.DustType<Dusts.PixelatedEmber>(), new Vector2(Player.velocity.X, Main.rand.NextFloat(-3, 0)), 0, new Color(255, Main.rand.Next(30), 0, 0), 0.2f);
+
 			Player.GetDamage(DamageClass.Generic) += 0.5f;
 		}
 	}

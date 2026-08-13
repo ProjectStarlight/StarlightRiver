@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			float homingMult = Math.Min(1 - (Projectile.timeLeft - 120f) / 60f, 1);
 
-			Projectile.velocity = Vector2.Lerp(Projectile.velocity, PathCenter.DirectionTo(Target.position) * 15, 0.03f * homingMult);
+			Projectile.velocity = Vector2.Lerp(Projectile.velocity, PathCenter.DirectionTo(Target.position) * 15, 0.02f * homingMult);
 
 			Projectile.rotation += 0.05f;
 

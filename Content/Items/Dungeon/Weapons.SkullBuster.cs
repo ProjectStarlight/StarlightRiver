@@ -57,6 +57,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			recipe.AddIngredient(ItemID.Grenade, 5);
 			recipe.AddIngredient(ItemID.Bone, 10);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 
 		public override void HoldItem(Player Player)
@@ -540,7 +541,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Projectile.height = 18;
 			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.timeLeft = 150;
-			Projectile.aiStyle = 14;
+			Projectile.aiStyle = ProjAIStyleID.GroundProjectile;
 			Projectile.friendly = false;
 		}
 

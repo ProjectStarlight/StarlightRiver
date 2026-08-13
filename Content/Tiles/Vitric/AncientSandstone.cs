@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	internal class AncientSandstonePlatformItem : QuickTileItem { public AncientSandstonePlatformItem() : base("Ancient Sandstone Platform", "", "AncientSandstonePlatform", 0, AssetDirectory.VitricTile) { } }
+	internal class AncientSandstonePlatformItem : BaseTileItem { public AncientSandstonePlatformItem() : base("Ancient Sandstone Platform", "", "AncientSandstonePlatform", 0, AssetDirectory.VitricTile) { } }
 
 	internal class AncientSandstoneWall : ModWall
 	{
@@ -46,7 +47,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	internal class AncientSandstoneWallItem : QuickWallItem
+	internal class AncientSandstoneWallItem : BaseWallItem
 	{
 		public AncientSandstoneWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstoneWall>(), 0, AssetDirectory.VitricTile) { }
 	}
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	internal class AncientSandstonePillarWallItem : QuickWallItem
+	internal class AncientSandstonePillarWallItem : BaseWallItem
 	{
 		public AncientSandstonePillarWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstonePillarWall>(), 0, AssetDirectory.VitricTile) { }
 	}

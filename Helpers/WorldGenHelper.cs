@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Core.Systems.NoBuildingSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +61,7 @@ namespace StarlightRiver.Helpers
 		public static bool IsRectangleSafe(Rectangle area, Func<Tile, Point16, bool> extraConstraints = null, bool extraConstraintsOnly = false)
 		{
 			//check against protected regions
-			if (ProtectionWorld.ProtectedRegions.Any(n => n.Intersects(area)) && !extraConstraintsOnly)
+			if (NoBuildSystem.protectedRegions.Any(n => n.Intersects(area)) && !extraConstraintsOnly)
 				return false;
 
 			//check against vanilla structure map

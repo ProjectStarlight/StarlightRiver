@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Projectile.timeLeft = 640;
 			Projectile.penetrate = 1;
 
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.Bullet;
 		}
 

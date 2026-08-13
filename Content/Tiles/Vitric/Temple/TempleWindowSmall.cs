@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -76,7 +77,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class TallWindowItem : QuickTileItem
+	class TallWindowItem : BaseTileItem
 	{
 		public TallWindowItem() : base("Window Actor", "{{Debug}} Item", "TallWindow", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
@@ -92,7 +93,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class TallWindowLavaItem : QuickTileItem
+	class TallWindowLavaItem : BaseTileItem
 	{
 		public TallWindowLavaItem() : base("Lava Window Actor", "{{Debug}} Item", "TallWindowLava", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
@@ -126,7 +127,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class TallWindowCrystalItem : QuickTileItem
+	class TallWindowCrystalItem : BaseTileItem
 	{
 		public TallWindowCrystalItem() : base("Crystal Window Actor", "{{Debug}} Item", "TallWindowCrystal", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}

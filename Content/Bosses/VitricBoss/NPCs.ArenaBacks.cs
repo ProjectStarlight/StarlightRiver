@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -280,8 +280,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			Color tintColor = new Color(75, 150, 255, NPC.AnyNPCs(NPCType<VitricBoss>()) ? 70 : 200);
 
-			ReflectionTarget.DrawReflection(spriteBatch, screenPos, normalMap: reflectionMap, flatOffset: new Vector2(-0.0025f, 0.07f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false, sourceRect: sourceRect);
-			ReflectionTarget.isDrawReflectablesThisFrame = true;
+			BackgroundReflectionSystem.DrawReflection(spriteBatch, screenPos, normalMap: reflectionMap, flatOffset: new Vector2(-0.0025f, 0.07f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false, sourceRect: sourceRect);
+			BackgroundReflectionSystem.isDrawReflectablesThisFrame = true;
 		}
 
 		public virtual void ScrollDraw(SpriteBatch sb) //im lazy
@@ -396,12 +396,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(tex3, target2, source2, Color.White);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(tex2, target.TopLeft() + new Vector2(64, -78), tex2.Bounds, Color.White);
 
-			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
-			{
-				Texture2D egg = Assets.Bosses.VitricBoss.VitricRightEasterEgg.Value;
-				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(egg, target, source, Color.White);
-			}
-
 			sb.End();
 			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
@@ -441,13 +435,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			sb.End();
 			sb.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
-			{
-				Texture2D egg = Assets.Bosses.VitricBoss.VitricRightEasterEgg.Value;
-				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(egg, target1, source1, Color.White);
-				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(egg, target2, source2, Color.White);
-			}
 		}
 
 		protected override int PlatformCount => 7;

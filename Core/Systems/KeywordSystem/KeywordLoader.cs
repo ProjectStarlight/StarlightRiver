@@ -51,11 +51,14 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			stream.Close();
 
 			// Wrap descriptions after loading to prevent having to do this when displaying them
-			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-
-			foreach (Keyword item in keywords)
+			if (!Main.dedServ)
 			{
-				item.Description = Helpers.LocalizationHelper.WrapString(item.Description, 200, font, 0.8f);
+				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+
+				foreach (Keyword item in keywords)
+				{
+					item.Description = Helpers.LocalizationHelper.WrapString(item.Description, 200, font, 0.8f);
+				}
 			}
 		}
 	}

@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Items.Misc
 						Tile tile = Main.tile[i, j];
 						Tile tile2 = Main.tile[i + 1, j + 1];
 
-						if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+						if (tile.TileType == TileID.Tombstones && tile.HasTile && tile2.TileType == TileID.Tombstones && tile2.HasTile)
 						{
 							Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
 							Vector2 offset = Main.rand.NextVector2Circular(8, 8);
@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Tile tile = Main.tile[i, j];
 					Tile tile2 = Main.tile[i + 1, j + 1];
 
-					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+					if (tile.TileType == TileID.Tombstones && tile.HasTile && tile2.TileType == TileID.Tombstones && tile2.HasTile)
 					{
 						Texture2D tex = Assets.Masks.GlowAlpha.Value;
 						Vector2 drawPos = new Vector2(i + 1, j + 1) * 16;
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Tile tile = Main.tile[i, j];
 					Tile tile2 = Main.tile[i + 1, j + 1];
 
-					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+					if (tile.TileType == TileID.Tombstones && tile.HasTile && tile2.TileType == TileID.Tombstones && tile2.HasTile)
 					{
 						Texture2D tex = TextureAssets.MagicPixel.Value;
 						Vector2 drawPos = new Vector2(i, j) * 16;
@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Tile tile = Main.tile[i, j];
 					Tile tile2 = Main.tile[i + 1, j + 1];
 
-					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+					if (tile.TileType == TileID.Tombstones && tile.HasTile && tile2.TileType == TileID.Tombstones && tile2.HasTile)
 					{
 						Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
 						for (int t = 0; t < 10; t++)
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Items.Misc
 						}
 					}
 
-					if (tile.TileType == 85 && tile.HasTile)
+					if (tile.TileType == TileID.Tombstones && tile.HasTile)
 					{
 						tile.HasTile = false;
 

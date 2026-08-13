@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -25,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	class MagmiteShrineItem : QuickTileItem
+	class MagmiteShrineItem : BaseTileItem
 	{
 		public MagmiteShrineItem() : base("The Boi", "It's him!", "MagmiteShrine", 1, "StarlightRiver/Assets/Tiles/Underground/") { }
 	}

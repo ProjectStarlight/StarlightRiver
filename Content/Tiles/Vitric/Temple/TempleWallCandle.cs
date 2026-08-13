@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -38,7 +39,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Candle");
 			AddMapEntry(new Color(140, 97, 86), name);
-			DustType = 0;
+			DustType = DustID.Dirt;
 			HitSound = SoundID.Dig;
 			RegisterItemDrop(ModContent.ItemType<TempleWallCandleItem>());
 			AnimationFrameHeight = 36;
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	public class TempleWallCandleItem : QuickTileItem
+	public class TempleWallCandleItem : BaseTileItem
 	{
 		public TempleWallCandleItem() : base("Temple Wall Candle", "", "TempleWallCandle", ItemRarityID.White, "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/") { }
 	}

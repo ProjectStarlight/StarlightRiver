@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Tiles.BaseTypes;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override Asset<Texture2D> CrystalHighlightTexture => Assets.Tiles.Permafrost.AuroraPylon_CrystalHighlight;
 
-		public override Color PrimaryColor => new Color(120, 120, 255);
+		public override Color PrimaryColor => new(120, 120, 255);
 
-		public override Color SecondaryColor => new Color(220, 110, 255);
+		public override Color SecondaryColor => new(220, 110, 255);
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		}
 	}
 
-	internal class AuroraPylonItem : QuickTileItem
+	internal class AuroraPylonItem : BaseTileItem
 	{
 		public AuroraPylonItem() : base("Aurora Pylon", "You shouldn't have this!", "AuroraPylon", 0, AssetDirectory.Debug, true, 0) { }
 	}

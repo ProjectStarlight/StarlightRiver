@@ -140,7 +140,11 @@ namespace StarlightRiver.Content.Items.Haunted
 
 					helm.minions.Add(proj);
 					helm.sleepTimer = 1200;
-					SoundEngine.PlaySound(item.UseSound.Value with { Pitch = item.UseSound.Value.Pitch - 0.3f });
+
+					if (item.UseSound.HasValue)
+					{
+						SoundEngine.PlaySound(item.UseSound.Value with { Pitch = item.UseSound.Value.Pitch - 0.3f });
+					}
 				}
 			}
 

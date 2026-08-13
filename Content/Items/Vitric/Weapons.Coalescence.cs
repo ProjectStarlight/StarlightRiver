@@ -486,8 +486,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Projectile.timeLeft < 30)
 				color *= Projectile.timeLeft / 30f;
 
-			Main.NewText(color);
-
 			Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, color * Math.Min(Timer / fadeIn, 1), Projectile.rotation + 1.57f, tex2.Size() / 2, 0.5f, 0, 0);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * (Math.Min(Timer / fadeIn, 1) * 0.5f), Projectile.rotation, new Vector2(tex.Width / 4f, tex.Height / 2f), 2, 0, 0);
 		}

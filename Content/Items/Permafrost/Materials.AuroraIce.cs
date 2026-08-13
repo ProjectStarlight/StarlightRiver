@@ -1,14 +1,15 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using Terraria.GameContent;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
-	class AuroraIceItem : QuickMaterial
+	class AuroraIceItem : BaseMaterial
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIceItem";
 
-		public AuroraIceItem() : base("Frozen Aurora Chunk", "A preserved piece of the night sky", 999, Item.sellPrice(0, 0, 5, 0), ItemRarityID.White) { }
+		public AuroraIceItem() : base("Frozen Aurora Chunk", "A preserved piece of the night sky", Item.sellPrice(0, 0, 5, 0), ItemRarityID.White) { }
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
@@ -61,11 +62,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 		}
 	}
 
-	class AuroraIceBar : QuickMaterial
+	class AuroraIceBar : BaseMaterial
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIceBar";
 
-		public AuroraIceBar() : base("Frozen Aurora Bar", "A preserved selection of the night sky", 99, Item.sellPrice(0, 0, 25, 0), ItemRarityID.Blue) { }
+		public AuroraIceBar() : base("Frozen Aurora Bar", "A preserved selection of the night sky", Item.sellPrice(0, 0, 25, 0), ItemRarityID.Blue) { }
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{

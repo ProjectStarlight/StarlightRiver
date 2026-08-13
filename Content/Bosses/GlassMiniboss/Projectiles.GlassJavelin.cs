@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -103,7 +104,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomColor, Projectile.rotation * 0.2f, bloom.Size() * 0.5f, bloomScale * 0.75f, SpriteEffects.None, 0);
 
 			//tell
-			Asset<Texture2D> tell = TextureAssets.Extra[98];
+			Asset<Texture2D> tell = TextureAssets.Extra[ExtrasID.SharpTears];
 			float tellLength = Helpers.Eases.BezierEase(Utils.GetLerpValue(120, 70, Projectile.timeLeft, true)) * 8f;
 			Color tellFade = Color.OrangeRed * Utils.GetLerpValue(40, 110, Projectile.timeLeft, true);
 			tellFade.A = 0;

@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -15,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallItem : QuickTileItem
+	class VitricPillarWallItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallShortItem : QuickTileItem
+	class VitricPillarWallShortItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallLavaItem : QuickTileItem
+	class VitricPillarWallLavaItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallCrystalItem : QuickTileItem
+	class VitricPillarWallCrystalItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 

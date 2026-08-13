@@ -95,7 +95,7 @@ namespace StarlightRiver.Core
 		/// </summary>
 		public Vector2[] Positions
 		{
-			get => positions;
+			get;
 			set
 			{
 				if (value.Length != maxPointCount)
@@ -103,11 +103,9 @@ namespace StarlightRiver.Core
 					throw new ArgumentException("Array of positions was a different length than the expected result!");
 				}
 
-				positions = value;
+				field = value;
 			}
 		}
-
-		private Vector2[] positions;
 
 		/// <summary>
 		/// Used in order to calculate the normal from the frontmost position, because there isn't a point after it in the original list.

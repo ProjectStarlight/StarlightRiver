@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.tileCollide = true;
 			Projectile.hostile = false;
 			Projectile.friendly = false;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			Projectile.width = Projectile.height = 12;
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

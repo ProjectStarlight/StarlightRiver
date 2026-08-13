@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < ProjectileLoader.ProjectileCount; i++)
 			{
 				proj.SetDefaults(i);
-				spearList.Add(i, proj.aiStyle == 19 && !blacklistedSpears.Contains(proj.type));
+				spearList.Add(i, proj.aiStyle == ProjAIStyleID.Spear && !blacklistedSpears.Contains(proj.type));
 			}
 		}
 

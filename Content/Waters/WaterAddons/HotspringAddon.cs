@@ -3,6 +3,7 @@ using StarlightRiver.Content.Tiles.Underground;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using StarlightRiver.Core.Systems.WaterAddonSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
 

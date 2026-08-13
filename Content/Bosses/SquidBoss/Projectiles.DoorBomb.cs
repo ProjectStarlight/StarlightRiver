@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.6f);
 
-			var d = Dust.NewDustPerfect(Projectile.Center, 264, -Projectile.velocity * 0.5f, 0, color, 1.4f);
+			var d = Dust.NewDustPerfect(Projectile.Center, DustID.PortalBoltTrail, -Projectile.velocity * 0.5f, 0, color, 1.4f);
 			d.noGravity = true;
 			d.rotation = Main.rand.NextFloat(6.28f);
 		}
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			for (int k = 0; k < 20; k++)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, Color.White, 1.4f);
+				var d = Dust.NewDustPerfect(Projectile.Center, DustID.PortalBoltTrail, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, Color.White, 1.4f);
 				d.noGravity = true;
 				d.rotation = Main.rand.NextFloat(6.28f);
 			}

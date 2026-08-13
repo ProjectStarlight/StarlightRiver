@@ -108,8 +108,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				NPC crystal = crystals.FirstOrDefault(n => n.ai[0] == 2);
 
-				if (crystal != null)
-					crystal.ai[0] = 0;
+				crystal?.ai[0] = 0;
 			}
 
 			if (AttackTimer > 180 && AttackTimer % 25 == 0 && Main.netMode != NetmodeID.MultiplayerClient)

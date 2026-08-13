@@ -28,6 +28,8 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 		{
 			AuroraWaterSystem.visCounter = 30;
 			NPC.velocity.X = 1;
+
+			Lighting.AddLight(NPC.Center, new Vector3(0.4f, 0.8f, 1f));
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -49,7 +51,7 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 			Vector2 pos = (NPC.position - Main.screenPosition) / 2f;
 			var target = new Rectangle((int)pos.X, (int)pos.Y, NPC.width / 2, NPC.height / 2);
 
-			spriteBatch.Draw(tex, target, Color.Red);
+			spriteBatch.Draw(tex, target, Color.Lime);
 		}
 	}
 }

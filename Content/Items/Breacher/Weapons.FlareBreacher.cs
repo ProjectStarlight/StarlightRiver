@@ -143,8 +143,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.friendly = true;
 			Projectile.penetrate = -1;
-			Projectile.aiStyle = 1;
-			AIType = 163;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
+			AIType = ProjectileID.Flare;
 		}
 
 		public override void SetStaticDefaults()

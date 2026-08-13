@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
@@ -49,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	}
 
 	[SLRDebug]
-	class ObjectiveGearItem : QuickTileItem
+	class ObjectiveGearItem : BaseTileItem
 	{
 		public ObjectiveGearItem() : base("Gear puzzle Point", "{{Debug}} Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
 	}

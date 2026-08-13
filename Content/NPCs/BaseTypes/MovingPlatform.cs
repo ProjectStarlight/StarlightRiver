@@ -177,10 +177,15 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				var plat = npc.ModNPC as MovingPlatform;
 
 				var PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + self.height, self.width, 1);
-				var NPCRect = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
+				var NPCRect = new Rectangle((int)(npc.position.X + npc.velocity.X), (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
 				var NPCOldRect = new Rectangle((int)plat.prevPos.X, (int)plat.prevPos.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
 
-				if ((PlayerRect.Intersects(NPCRect) || PlayerRect.Intersects(NPCOldRect)) && self.position.Y <= npc.position.Y)
+				NPCRect.Inflate(-2, 0);
+				NPCOldRect.Inflate(-2, 0);
+
+				bool oldValid = plat.beingStoodOn && PlayerRect.Intersects(NPCOldRect);
+
+				if ((PlayerRect.Intersects(NPCRect) || oldValid) && self.position.Y <= npc.position.Y)
 				{
 					if (!self.justJumped && self.velocity.Y >= 0)
 					{
@@ -194,8 +199,12 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 						self.velocity.Y = 0;
 						self.jump = 0;
 						self.fallStart = (int)(self.position.Y / 16f);
-						self.position.Y = npc.position.Y - self.height + 4;
-						self.position += npc.velocity;
+						self.position.Y = npc.position.Y - self.height;
+
+						self.position.Y += npc.velocity.Y;
+
+						if (self != Main.LocalPlayer || !SquareColliderSystem.localPlayerPushedBySquareInX)
+							self.position.X += npc.velocity.X;
 
 						(npc.ModNPC as MovingPlatform).beingStoodOn = true;
 					}
@@ -253,15 +262,15 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			Player Player = Main.player[proj.owner];
 			int numHooks = 3;
 			//time to replicate retarded vanilla hardcoding, wheee
-			if (proj.type == 165)
+			if (proj.type == ProjectileID.Web)
 				numHooks = 8;
-			if (proj.type == 256)
+			if (proj.type == ProjectileID.SkeletronHand)
 				numHooks = 2;
-			if (proj.type == 372)
+			if (proj.type == ProjectileID.FishHook)
 				numHooks = 2;
-			if (proj.type == 652)
+			if (proj.type == ProjectileID.StaticHook)
 				numHooks = 1;
-			if (proj.type >= 646 && proj.type <= 649)
+			if (proj.type >= ProjectileID.LunarHookSolar && proj.type <= ProjectileID.LunarHookStardust)
 				numHooks = 4;
 			//end vanilla zoink
 
@@ -279,7 +288,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
-			return entity.aiStyle == 7;
+			return entity.aiStyle == ProjAIStyleID.Hook;
 		}
 
 		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)

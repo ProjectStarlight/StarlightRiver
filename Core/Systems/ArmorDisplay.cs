@@ -12,7 +12,7 @@ using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core.Systems
 {
-	internal class ArmorDisplay : GlobalNPC
+	/*internal class ArmorDisplay : GlobalNPC
 	{
 		public float currentAnim;
 		public float maxOverblow;
@@ -127,5 +127,5 @@ namespace StarlightRiver.Core.Systems
 				}
 			}
 		}
-	}
+	}*/
 }

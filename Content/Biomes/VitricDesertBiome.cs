@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using StarlightRiver.Content.Waters;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using Terraria.Graphics.Effects;
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.Biomes
 			ForegroundParticles.UpdateParticles();
 			BackgroundParticles.UpdateParticles();
 
-			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !NPC.AnyDanger())
+			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !NPC.AnyDanger() && !CutawayHandler.forgeOverlay.Inside(Main.LocalPlayer) && !CutawayHandler.templeOverlay.Inside(Main.LocalPlayer))
 			{
 				ScreenShaderData shader = Filters.Scene["StarlightRiver_GradientDistortion"].GetShader();
 
@@ -122,8 +123,8 @@ namespace StarlightRiver.Content.Biomes
 				if (!Filters.Scene["StarlightRiver_GradientDistortion"].IsActive())
 				{
 					Filters.Scene.Activate("StarlightRiver_GradientDistortion").GetShader()
-						.UseOpacity(2.5f)
-						.UseIntensity(7f)
+						.UseOpacity(2f)
+						.UseIntensity(5f)
 						.UseProgress(6)
 						.UseImage(LightingBuffer.screenLightingTarget.RenderTarget, 0);
 				}
@@ -164,7 +165,7 @@ namespace StarlightRiver.Content.Biomes
 		private void ChangeBlackThreshold(ILContext il)
 		{
 			var c = new ILCursor(il);
-			c.TryGotoNext(n => n.MatchLdloc(6), n => n.MatchStloc(13)); //beginning of the loop, local 11 is a looping variable
+			c.TryGotoNext(n => n.MatchLdloc(8), n => n.MatchStloc(12)); //beginning of the loop, local 11 is a looping variable
 			c.Index++; //this is kinda goofy since I dont think you could actually ever write c# to compile to the resulting IL from emitting here.
 			c.Emit(OpCodes.Ldloc, 3); //pass the original value so we can set that instead if we dont want to change the threshold
 			c.EmitDelegate<Func<float, float>>(NewThreshold); //check if were in the biome to set, else set the original value

@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				case BottleType.Regular:
 
-					Projectile.aiStyle = 2;
+					Projectile.aiStyle = ProjAIStyleID.ThrownProjectile;
 					break;
 
 				case BottleType.Launch:
@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (!sliding)
 					{
-						Projectile.aiStyle = 2;
+						Projectile.aiStyle = ProjAIStyleID.ThrownProjectile;
 					}
 					else
 					{
@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				case BottleType.Bounce:
 
-					Projectile.aiStyle = 2;
+					Projectile.aiStyle = ProjAIStyleID.ThrownProjectile;
 					break;
 			}
 
@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void SpawnLightning()
 		{
 			for (int i = 0; i < 10; i++)
-				Dust.NewDustPerfect(Projectile.Center, 133, Main.rand.NextVector2Circular(3, 3)).noGravity = false;
+				Dust.NewDustPerfect(Projectile.Center, DustID.Firework_Yellow, Main.rand.NextVector2Circular(3, 3)).noGravity = false;
 
 			IEnumerable<NPC> targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && x.Distance(Projectile.Center) < 200);
 
@@ -414,7 +414,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			for (int i = 0; i < 5; i++)
-				Dust.NewDustPerfect(Projectile.Center, 67, Main.rand.NextVector2Circular(2, 2)).noLight = true;
+				Dust.NewDustPerfect(Projectile.Center, DustID.IceRod, Main.rand.NextVector2Circular(2, 2)).noLight = true;
 		}
 
 		private Color GetColor()
@@ -674,7 +674,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.width = 12;
 			Projectile.height = 12;
 
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			Projectile.extraUpdates = 1;
 
 			Projectile.friendly = true;
@@ -709,7 +709,7 @@ namespace StarlightRiver.Content.Items.Misc
 				SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
 
 				for (int i = 0; i < 6; i++)
-					Dust.NewDustPerfect(Projectile.Center, 67, Main.rand.NextVector2Circular(2, 2)).noLight = true;
+					Dust.NewDustPerfect(Projectile.Center, DustID.IceRod, Main.rand.NextVector2Circular(2, 2)).noLight = true;
 
 				Projectile.timeLeft = FADE_TIME;
 			}
@@ -725,7 +725,7 @@ namespace StarlightRiver.Content.Items.Misc
 			SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
 
 			for (int i = 0; i < 6; i++)
-				Dust.NewDustPerfect(Projectile.Center, 67, Main.rand.NextVector2Circular(2, 2)).noLight = true;
+				Dust.NewDustPerfect(Projectile.Center, DustID.IceRod, Main.rand.NextVector2Circular(2, 2)).noLight = true;
 		}
 	}
 

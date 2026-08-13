@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.CustomHooks;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Utility
@@ -17,7 +18,7 @@ namespace StarlightRiver.Content.Items.Utility
 		{
 			Item.width = 32;
 			Item.height = 32;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
 			Item.useStyle = Terraria.ID.ItemUseStyleID.HoldUp;
 			Item.consumable = true;
 			Item.UseSound = Terraria.ID.SoundID.Item2;
@@ -25,8 +26,8 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override bool? UseItem(Player player)
 		{
-			ModContent.GetInstance<AstralMeteor>().meteorForced = true;
-			ModContent.GetInstance<AstralMeteor>().moonstoneForced = false;
+			ModContent.GetInstance<MoonstoneBiomeSystem>().meteorForced = true;
+			ModContent.GetInstance<MoonstoneBiomeSystem>().moonstoneForced = false;
 
 			Main.NewText("A meteor is bound to fall next...", new Color(215, 120, 50));
 

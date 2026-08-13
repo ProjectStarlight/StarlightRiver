@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil.Cil;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		{
 			Tile tile = Main.tile[i, j];
 
-			var tex = Assets.Tiles.Starlight.OracleGlassGlow.Value;
+			Texture2D tex = Assets.Tiles.Starlight.OracleGlassGlow.Value;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 			Vector2 target = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + Vector2.One * 8;
 			var color = new Color(255, 255, 255, 0);
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		}
 	}
 
-	class OracleGlassItem : QuickTileItem
+	class OracleGlassItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.StarlightTile + Name;
 

@@ -631,7 +631,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Projectile.timeLeft = 270;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = false;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.WoodenArrowFriendly;
 		}
 
@@ -699,7 +699,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			{
 				ManageCaches();
 				ManageTrail();
-				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), DustID.Torch, null, 0, default, 1.1f);
 			}
 
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;

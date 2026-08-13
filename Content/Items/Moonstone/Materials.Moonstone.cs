@@ -1,9 +1,10 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
-	public class MoonstoneOreItem : QuickTileItem
+	public class MoonstoneOreItem : BaseTileItem
 	{
 		public MoonstoneOreItem() : base("Moonstone", "", "MoonstoneOre", ItemRarityID.Blue, AssetDirectory.MoonstoneItem) { }
 
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	public class MoonstoneBarItem : QuickTileItem
+	public class MoonstoneBarItem : BaseTileItem
 	{
 		public MoonstoneBarItem() : base("Moonstone Bar", "'Shimmering with twisted starlight'", "MoonstoneBar", ItemRarityID.White, AssetDirectory.MoonstoneItem) { }  //TODO: Fix place type
 
