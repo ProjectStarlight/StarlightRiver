@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -44,6 +45,56 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<BarrierPlayer>().maxBarrier += lastMana;
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			Texture2D tex = Assets.Items.Crimson.MindCloakGlow.Value;
+
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
+
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+
+				spriteBatch.Draw(tex, position, frame, drawColor, 0, origin, scale, 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+			}
+
+			return true;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			Texture2D tex = Assets.Items.Crimson.MindCloakGlow.Value;
+
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
+
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+
+				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, rotation, Item.Size / 2f, scale, 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+			}
+
+			return true;
 		}
 	}
 }
