@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// </summary>
 		public NPC Weakpoint
 		{
-			get => Main.npc[weakpointIndex];
-			set => weakpointIndex = value.whoAmI;
+			get => weakpointIndex != -1 ? Main.npc[weakpointIndex] : null;
+			set => weakpointIndex = value?.whoAmI ?? -1;
 		}
 
 		public Vector2 savedPos;
