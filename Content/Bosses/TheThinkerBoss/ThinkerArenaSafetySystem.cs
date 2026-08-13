@@ -56,6 +56,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void PostUpdateEverything()
 		{
+			// Force boss false, prevents weird music in multiplayer
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.ModNPC is TheThinker thinker)
+				{
+					if (!thinker.FightActive)
+						thinker.NPC.boss = false;
+				}
+			}
+
 			foreach (ThinkerRecord record in records)
 			{
 				if (record.thinker is null || !record.thinker.active || record.thinker.type != ModContent.NPCType<TheThinker>())

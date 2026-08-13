@@ -85,6 +85,18 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			foreach(NPC npc in Main.npc)
+			{
+				if (npc.boss)
+				{
+					Main.NewText($"Boss: {npc.FullName}, {npc.whoAmI}, {npc.active}, {npc.position}, {Vector2.Distance(npc.Center, player.Center)}");
+
+					for (int k = 0; k < 100; k++)
+						Dust.NewDust(npc.position, npc.width, npc.height, DustID.MagicMirror);
+				}
+			}
+			return true;
+
 			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 			return true;
 
