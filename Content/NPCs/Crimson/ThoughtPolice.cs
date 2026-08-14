@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -261,6 +262,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = Assets.NPCs.Crimson.ThoughtPolice.Value;
+			Texture2D over = Assets.NPCs.Crimson.ThoughtPoliceMask.Value;
 			var frame = new Rectangle((int)Variant * 104, (int)(Timer / 10 % 6) * 148, 104, 148);
 
 			if (State == ThoughtPoliceState.Aggroed || State == ThoughtPoliceState.Attack)
@@ -270,6 +272,25 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				float colorPulse = 1f + MathF.Sin(Timer * 0.1f) * 0.35f;
 
 				spriteBatch.Draw(aura, NPC.Center - screenPos, null, new Color(255, 80, 80) * 0.25f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
+			}
+
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
+			var rasterizer = NPC.IsABestiaryIconDummy ? new RasterizerState() { ScissorTestEnable = true, CullMode = CullMode.None } : Main.Rasterizer;
+
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(over.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.01f);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				spriteBatch.Draw(over, NPC.Center - screenPos, frame, Color.White, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
