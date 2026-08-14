@@ -3872,6 +3872,16 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			ThoughtProvoker: {
+				DisplayName: Thought Provoker
+				Tooltip:
+					'''
+					Summons Thinky Jr to protect you
+					Endurance is increased by 5% per Thinky Jr alive
+					If hit by an enemy or projectile, Thinky Jr will target the nearest enemy and explode violently
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -4236,6 +4246,8 @@ Mods: {
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			ReusableHallucinationZone.DisplayName: Reusable Hallucination Zone
 			SpawnEgg.DisplayName: Spawn Egg
+			ThoughtProvokerExplosion.DisplayName: Greymatter Explosion
+			ThoughtProvokerProjectile.DisplayName: Thinky Junior
 		}
 
 		Biomes: {
@@ -4758,6 +4770,11 @@ Mods: {
 					What lies below?
 					Increased mining speed
 					'''
+			}
+
+			ThoughtProvokerSummonBuff: {
+				DisplayName: Thinky Juniors
+				Description: 1000 IQ
 			}
 		}
 
