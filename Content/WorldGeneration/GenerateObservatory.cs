@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems.NoBuildingSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace StarlightRiver.Core
 						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.X, 30, 5, true) < 5)
 						{
 							StructureHelper.API.Generator.GenerateStructure("Structures/Observatory", new Point16(x - 8, y - 24), Mod);
+							NoBuildSystem.protectedRegions.Add(new Rectangle(x - 4, y - 24, observatorySize.X - 8, observatorySize.Y));
 							ObservatorySystem.observatoryRoom = new Rectangle(x + 11, y - 20, 16, 7);
 							generated = true;
 							break;

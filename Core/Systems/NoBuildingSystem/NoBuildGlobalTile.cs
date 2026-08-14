@@ -19,4 +19,15 @@ namespace StarlightRiver.Core.Systems.NoBuildingSystem
 			return base.CanExplode(i, j, type);
 		}
 	}
+
+	class NoBuildGlobalWall : GlobalWall
+	{
+		public override bool CanExplode(int i, int j, int type)
+		{
+			if (NoBuildSystem.IsTileProtected(i, j))
+				return false;
+
+			return base.CanExplode(i, j, type);
+		}
+	}
 }

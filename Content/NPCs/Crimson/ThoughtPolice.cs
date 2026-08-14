@@ -1,5 +1,7 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.Hovers;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -221,30 +223,39 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			NPC.target = player.whoAmI;
-			Timer = 0;
-			State = ThoughtPoliceState.Aggroed;
-			aggroFlashTimer = MAX_FLASH_TIMER;
-			NPC.netUpdate = true;
-		}
-
-		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			NPC.target = projectile.owner;
-			Timer = 0;
-			State = ThoughtPoliceState.Aggroed;
-			aggroFlashTimer = MAX_FLASH_TIMER;
-			NPC.netUpdate = true;
-		}
-
-		public override void HitEffect(NPC.HitInfo hit)
-		{
-			if (Main.netMode != NetmodeID.MultiplayerClient)
+			if (State == ThoughtPoliceState.Idle)
 			{
+				NPC.target = player.whoAmI;
 				Timer = 0;
 				State = ThoughtPoliceState.Aggroed;
 				aggroFlashTimer = MAX_FLASH_TIMER;
 				NPC.netUpdate = true;
+			}
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			if (State == ThoughtPoliceState.Idle)
+			{
+				NPC.target = projectile.owner;
+				Timer = 0;
+				State = ThoughtPoliceState.Aggroed;
+				aggroFlashTimer = MAX_FLASH_TIMER;
+				NPC.netUpdate = true;
+			}
+		}
+
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (State == ThoughtPoliceState.Idle)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					Timer = 0;
+					State = ThoughtPoliceState.Aggroed;
+					aggroFlashTimer = MAX_FLASH_TIMER;
+					NPC.netUpdate = true;
+				}
 			}
 		}
 
@@ -299,6 +310,27 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					var color = new Color(255, 100, 100, (byte)(125 * tp.localScanOpacity));
 
 					spriteBatch.Draw(tex, pos, null, color, tp.AimRotation + 1.57f / 2f, origin, 1f, 0, 0);
+
+					Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
+
+					if (effect != null)
+					{
+						Texture2D over = Assets.NPCs.Crimson.ThoughtPoliceMask.Value;
+
+						effect.Parameters["u_color"].SetValue(Vector3.One);
+						effect.Parameters["u_fade"].SetValue(Vector3.One);
+						effect.Parameters["u_resolution"].SetValue(over.Size());
+						effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.01f);
+
+						spriteBatch.End();
+						spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+						var frame = new Rectangle((int)tp.Variant * 104, (int)(tp.Timer / 10 % 6) * 148, 104, 148);
+						spriteBatch.Draw(over, tp.NPC.Center - Main.screenPosition, frame, Color.White, tp.NPC.rotation, frame.Size() / 2f, tp.NPC.scale, 0, 0);
+
+						spriteBatch.End();
+						spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+					}
 				}
 
 				toRender.RemoveAll(n => n is null || !n.NPC.active);
