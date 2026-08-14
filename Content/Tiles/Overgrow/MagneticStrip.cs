@@ -415,7 +415,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				enterTime--;
 			}
 
-			if (Player.velocity.Y == 0 && lastYVel != 0)
+			if (Player.velocity.Y == 0 && lastYVel != 0 && direction != GravDirection.down)
 			{
 				Vector2 off = direction switch
 				{
