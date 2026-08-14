@@ -222,30 +222,39 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			NPC.target = player.whoAmI;
-			Timer = 0;
-			State = ThoughtPoliceState.Aggroed;
-			aggroFlashTimer = MAX_FLASH_TIMER;
-			NPC.netUpdate = true;
-		}
-
-		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			NPC.target = projectile.owner;
-			Timer = 0;
-			State = ThoughtPoliceState.Aggroed;
-			aggroFlashTimer = MAX_FLASH_TIMER;
-			NPC.netUpdate = true;
-		}
-
-		public override void HitEffect(NPC.HitInfo hit)
-		{
-			if (Main.netMode != NetmodeID.MultiplayerClient)
+			if (State == ThoughtPoliceState.Idle)
 			{
+				NPC.target = player.whoAmI;
 				Timer = 0;
 				State = ThoughtPoliceState.Aggroed;
 				aggroFlashTimer = MAX_FLASH_TIMER;
 				NPC.netUpdate = true;
+			}
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			if (State == ThoughtPoliceState.Idle)
+			{
+				NPC.target = projectile.owner;
+				Timer = 0;
+				State = ThoughtPoliceState.Aggroed;
+				aggroFlashTimer = MAX_FLASH_TIMER;
+				NPC.netUpdate = true;
+			}
+		}
+
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (State == ThoughtPoliceState.Idle)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					Timer = 0;
+					State = ThoughtPoliceState.Aggroed;
+					aggroFlashTimer = MAX_FLASH_TIMER;
+					NPC.netUpdate = true;
+				}
 			}
 		}
 
