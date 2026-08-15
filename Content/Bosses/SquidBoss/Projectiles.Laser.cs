@@ -124,8 +124,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			// Adjust 1 tile down to prevent hitting the player while ontop of blocks
-			rect.Height -= 16;
-			rect.Y += 16;
+			rect.Height -= 19;
+			rect.Y += 19;
 
 			if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Hitbox.Intersects(rect)) // Damage is dictated by the local client for that more fair seeming hitboxes
 			{
