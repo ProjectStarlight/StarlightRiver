@@ -47,6 +47,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("");
+			NPCID.Sets.ImmuneToAllBuffs[Type] = true;
 		}
 
 		public override void SetDefaults()

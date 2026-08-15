@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (dummySpear.IsAir && !Main.gameMenu)
 				dummySpear.SetDefaults(ItemType<Datsuzei>());
 
-			if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player) && player.controlUp)
+			if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player) && player.controlDown)
 			{
 				Main.HoverItem = dummySpear.Clone();
 				Main.hoverItemName = dummySpear.Name;
@@ -205,9 +205,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (IsArmorSet(Player))
 			{
-				if (!Player.controlUp)
+				if (!Player.controlDown)
 				{
-					var spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats")
+					var spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "Press DOWN for Datsuzei stats")
 					{
 						OverrideColor = new Color(200, 200, 200)
 					};

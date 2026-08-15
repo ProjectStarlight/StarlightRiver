@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System.IO;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -42,6 +43,24 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			{
 				barrierNPC.maxBarrier = 0;
 				barrierNPC.rechargeRate = 0;
+			}
+
+			// safeguard to shunt into glassweaver arena
+			if (partOfGauntlet)
+			{
+				var shuntRegion = new Rectangle(StarlightWorld.GlassweaverArena.X, StarlightWorld.GlassweaverArena.Y + 6 * 16, StarlightWorld.GlassweaverArena.Width, StarlightWorld.GlassweaverArena.Height - 4*16);
+
+				if (NPC.position.X <= shuntRegion.X)
+					NPC.position.X = shuntRegion.X + 1;
+
+				if (NPC.position.X + NPC.width >= shuntRegion.X + shuntRegion.Width)
+					NPC.position.X = shuntRegion.X + shuntRegion.Width - NPC.width - 1;
+
+				if (NPC.position.Y <= shuntRegion.Y)
+					NPC.position.Y = shuntRegion.Y + 1;
+
+				if (NPC.position.Y + NPC.height >= shuntRegion.Y + shuntRegion.Height)
+					NPC.position.Y = shuntRegion.Y + shuntRegion.Height - NPC.height - 1;
 			}
 		}
 

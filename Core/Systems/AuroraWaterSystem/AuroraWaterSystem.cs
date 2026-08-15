@@ -8,8 +8,10 @@ using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using Terraria.Net;
 using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core.Systems.AuroraWaterSystem
@@ -70,8 +72,22 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public override void Load()
 		{
 			On_Main.DrawInfernoRings += DrawAuroraWater;
+			On_FilterManager.CanCapture += ForceCapture;
 			auroraTarget = new(DrawAuroraTarget, () => Visible, 1);
 			auroraBackTarget = new(DrawAuroraBackTarget, () => Visible, 1);
+		}
+
+		private bool ForceCapture(On_FilterManager.orig_CanCapture orig, FilterManager self)
+		{
+			if (Visible)
+			{
+				if (Filters.Scene._activeFilterCount <= 0)
+					Filters.Scene._activeFilterCount = 1;
+
+				return true;
+			}
+
+			return orig(self);
 		}
 
 		public static void DrawToMetaballTarget()
@@ -428,7 +444,6 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
 			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 			effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			//effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 			effect.Parameters["gameTexture"].SetValue(Main.screenTarget);
 			effect.Parameters["transform"].SetValue(Matrix.Invert(Main.GameViewMatrix.TransformationMatrix));
 			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));

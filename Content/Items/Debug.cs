@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items
 	[SLRDebug]
 	class DebugStick : ModItem
 	{
-		readonly Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
+		//readonly Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
 
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 

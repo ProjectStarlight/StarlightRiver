@@ -55,6 +55,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("");
+			NPCID.Sets.ImmuneToAllBuffs[Type] = true;
 		}
 
 		public override void SetDefaults()

@@ -28,6 +28,16 @@ namespace StarlightRiver.Content.Abilities
 				return null;
 			}
 		}
+
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as InfusionItem;
+
+			clone.color = color;
+			clone.ability = ability;
+
+			return clone;
+		}
 	}
 
 	public abstract class InfusionItem<T1, T2> : InfusionItem where T1 : Ability where T2 : T1
