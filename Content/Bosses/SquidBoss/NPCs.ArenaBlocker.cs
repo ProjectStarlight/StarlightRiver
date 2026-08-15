@@ -17,6 +17,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			On_Player.Update_NPCCollision += ForceColliding;
 		}
 
+		public override void SetStaticDefaults()
+		{
+			NPCID.Sets.ImmuneToAllBuffs[Type] = true;
+		}
+
 		public override void SetDefaults()
 		{
 			NPC.width = 1600;
