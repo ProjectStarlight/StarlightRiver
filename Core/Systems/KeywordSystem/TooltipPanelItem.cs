@@ -31,6 +31,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 	internal class TooltipPanelItem : GlobalItem
 	{
+		[CloneByReference] // Check if there is anything that could even conceivibly go wrong with this? This should only be relevant to the single instance used to render a tooltip
 		public List<PanelDraw> drawQueue = new();
 
 		public override bool InstancePerEntity => true;

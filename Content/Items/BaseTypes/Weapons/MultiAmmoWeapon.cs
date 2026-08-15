@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.Abilities;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -15,6 +16,7 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 
 		public AmmoStruct currentAmmoStruct;
 
+		[field: CloneByReference]
 		public virtual List<AmmoStruct> ValidAmmos { get; }
 
 		public override void Load()
