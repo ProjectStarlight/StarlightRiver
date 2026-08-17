@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Content.Items.Forest;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Snow;
@@ -18,7 +19,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Crimson
 {
-	internal class HeavyThoughts : AbstractHeavyFlail
+	internal class HeavyThoughts : BaseHeavyFlail
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
@@ -49,7 +50,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		}
 	}
 
-	internal class HeavyThoughtsProjectile : AbstractHeavyFlailProjectile
+	internal class HeavyThoughtsProjectile : BaseHeavyFlailProjectile
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
@@ -60,11 +61,6 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void AI()
 		{
 			base.AI();
-
-			/*for (int k = 0; k < 2; k++)
-			{
-				Dust.NewDust(Projectile.Center - Vector2.One * 20, 40, 40, DustID.IceTorch);
-			}*/
 		}
 
 		public override void OnImpact(bool wasTile)
@@ -76,7 +72,8 @@ namespace StarlightRiver.Content.Items.Crimson
 					(progress, ticksPassed) => ticksPassed / 20f,
 					(progress, intensity, ticksPassed) => ticksPassed < 20);
 
-				//Helpers.SoundHelper.PlayPitched("Magic/FrostHit", 1, 0, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/EnergyBreak", 1, Main.rand.NextFloat(-1.2f, -0.8f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 0.5f, Main.rand.NextFloat(0.2f, 0.4f), Projectile.Center);
 
 				if (Owner == Main.LocalPlayer)
 					CameraSystem.shake += 5;
