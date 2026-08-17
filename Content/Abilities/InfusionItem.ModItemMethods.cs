@@ -33,8 +33,7 @@ namespace StarlightRiver.Content.Abilities
 
 		public override void UpdateInventory(Player player)
 		{
-			if (ability != null)
-				ability.User = player.GetHandler();
+			ability?.User = player.GetHandler();
 		}
 
 		public override void Update(ref float gravity, ref float maxFallSpeed)

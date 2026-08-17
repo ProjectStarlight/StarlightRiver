@@ -11,22 +11,18 @@ namespace StarlightRiver.Content.Prefixes.CombatMountPrefixes
 			mount.secondaryCooldownSpeedMultiplier += 0.5f;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			var newline = new TooltipLine(StarlightRiver.Instance, "PrefixTip", "+35% Attack Speed")
+			yield return new TooltipLine(StarlightRiver.Instance, "PrefixTip", "+35% Attack Speed")
 			{
 				IsModifier = true
 			};
 
-			tooltips.Add(newline);
-
-			newline = new TooltipLine(StarlightRiver.Instance, "PrefixTip2", "-50% Secondary Cooldown Recovery")
+			yield return new TooltipLine(StarlightRiver.Instance, "PrefixTip2", "-50% Secondary Cooldown Recovery")
 			{
 				IsModifier = true,
 				IsModifierBad = true
 			};
-
-			tooltips.Add(newline);
 		}
 	}
 }

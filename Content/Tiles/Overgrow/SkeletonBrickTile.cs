@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
-	public class SkeletonBrickItem : QuickTileItem
+	public class SkeletonBrickItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + Name;
 

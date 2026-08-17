@@ -397,12 +397,12 @@ namespace StarlightRiver.Noise
 			DECIMAL sum = Math.Abs(SingleSimplex(seed, x, y)) * 2 - 1;
 			DECIMAL amp = 1;
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += (Math.Abs(SingleSimplex(++seed, x, y)) * 2 - 1) * amp;
 			}
 
@@ -414,13 +414,13 @@ namespace StarlightRiver.Noise
 			DECIMAL sum = Math.Abs(SingleSimplex(seed, x, y, z)) * 2 - 1;
 			DECIMAL amp = 1;
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 				z *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += (Math.Abs(SingleSimplex(++seed, x, y, z)) * 2 - 1) * amp;
 			}
 
@@ -432,12 +432,12 @@ namespace StarlightRiver.Noise
 			DECIMAL sum = SingleSimplex(seed, x, y);
 			DECIMAL amp = 1;
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += SingleSimplex(++seed, x, y) * amp;
 			}
 
@@ -449,13 +449,13 @@ namespace StarlightRiver.Noise
 			DECIMAL sum = SingleSimplex(seed, x, y, z);
 			DECIMAL amp = 1;
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 				z *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += SingleSimplex(++seed, x, y, z) * amp;
 			}
 
@@ -467,12 +467,12 @@ namespace StarlightRiver.Noise
 			DECIMAL sum = 1 - Math.Abs(SingleSimplex(seed, x, y));
 			DECIMAL amp = 1;
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum -= (1 - Math.Abs(SingleSimplex(++seed, x, y))) * amp;
 			}
 
@@ -484,13 +484,13 @@ namespace StarlightRiver.Noise
 			DECIMAL sum = 1 - Math.Abs(SingleSimplex(seed, x, y, z));
 			DECIMAL amp = 1;
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 				z *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum -= (1 - Math.Abs(SingleSimplex(++seed, x, y, z))) * amp;
 			}
 

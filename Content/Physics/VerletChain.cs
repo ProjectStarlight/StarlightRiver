@@ -286,46 +286,65 @@ namespace StarlightRiver.Content.Physics
 				segment.posNow += gravityVel;
 			}
 
-			for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
+			for (int i = 0; i < (useEndPoint ? (constraintRepetitions / 2) : constraintRepetitions); i++)//the amount of times Constraints are applied per update
 			{
 				if (useStartPoint)
 					ropeSegments[simStartOffset].posNow = startPoint;
 
 				if (useEndPoint)
-					ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
+					ropeSegments[simEndOffset - 1].posNow = endPoint;
 
-				ApplyConstraint();
+				if (useEndPoint)
+					ApplyConstraintTwoWay();
+				else
+					ApplyConstraint();
 			}
 		}
 
 		private void ApplyConstraint()
 		{
-			for (int i = simStartOffset; i < simEndOffset - 1; i++)
+			var end = simEndOffset - 1;
+
+			for (int i = simStartOffset; i < end; i++)
 			{
-				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
+				PointConstrain(i, i + 1, i == simStartOffset);
+			}
+		}
 
-				float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
-				float error = Math.Abs(dist - segmentDist);
-				Vector2 changeDir = Vector2.Zero;
+		private void ApplyConstraintTwoWay()
+		{
+			var end = simEndOffset - 1;
 
-				if (dist > segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
-				else if (dist < segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
+			for (int i = simStartOffset; i < end; i++)
+			{
+				PointConstrain(i, i + 1, i == simStartOffset);
+				PointConstrain(end - (i - simStartOffset), end - (i - simStartOffset) - 1, i == simStartOffset);
+			}
+		}
 
-				Vector2 changeAmount = changeDir * error;
-				if (i != 0)
-				{
-					ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
-					ropeSegments[i] = ropeSegments[i];
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount * 0.5f);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
-				else
-				{
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
+		private void PointConstrain(int start, int end, bool endOnly)
+		{
+			float segmentDist = customDistances ? segmentDistances[start] : segmentDistance;
+
+			float dist = (ropeSegments[start].posNow - ropeSegments[end].posNow).Length();
+			float error = Math.Abs(dist - segmentDist);
+			Vector2 changeDir = Vector2.Zero;
+
+			if (dist > segmentDist)
+				changeDir = Vector2.Normalize(ropeSegments[start].posNow - ropeSegments[end].posNow);
+			else if (dist < segmentDist)
+				changeDir = Vector2.Normalize(ropeSegments[end].posNow - ropeSegments[start].posNow);
+
+			Vector2 changeAmount = changeDir * error;
+
+			if (endOnly)
+			{
+				ropeSegments[end].posNow += TileCollision(ropeSegments[end].posNow, changeAmount);
+			}
+			else
+			{
+				ropeSegments[start].posNow += TileCollision(ropeSegments[start].posNow, changeAmount * -0.5f);
+				ropeSegments[end].posNow += TileCollision(ropeSegments[end].posNow, changeAmount * 0.5f);
 			}
 		}
 

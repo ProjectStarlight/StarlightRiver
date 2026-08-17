@@ -66,10 +66,10 @@ namespace StarlightRiver.Noise
 
 			SingleGradientPerturb(seed, amp, Frequency, ref x, ref y);
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				freq *= FractalLacunarity;
-				amp *= gain;
+				amp *= FractalGain;
 				SingleGradientPerturb(++seed, amp, freq, ref x, ref y);
 			}
 		}
@@ -81,10 +81,10 @@ namespace StarlightRiver.Noise
 
 			SingleGradientPerturb(seed, amp, Frequency, ref x, ref y, ref z);
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				freq *= FractalLacunarity;
-				amp *= gain;
+				amp *= FractalGain;
 				SingleGradientPerturb(++seed, amp, freq, ref x, ref y, ref z);
 			}
 		}

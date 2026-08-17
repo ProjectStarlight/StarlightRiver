@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -103,7 +104,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 	}
 
 	[Autoload(false)]
-	public class LoaderTileItem : QuickTileItem
+	public class LoaderTileItem : BaseTileItem
 	{
 		public LoaderTileItem() { }
 		public override bool CloneNewInstances => true;

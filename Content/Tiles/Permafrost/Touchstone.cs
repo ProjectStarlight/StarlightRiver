@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
@@ -187,7 +188,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	}
 
 	[SLRDebug]
-	class TouchstoneItem : QuickTileItem
+	class TouchstoneItem : BaseTileItem
 	{
 		public TouchstoneItem() : base("Touchstone", "A guiding light", "Touchstone", 3, AssetDirectory.PermafrostTile) { }
 	}

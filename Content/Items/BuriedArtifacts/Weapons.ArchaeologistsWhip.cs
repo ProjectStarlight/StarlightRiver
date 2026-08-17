@@ -1,4 +1,5 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;

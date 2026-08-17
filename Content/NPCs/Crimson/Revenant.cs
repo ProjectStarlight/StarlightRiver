@@ -8,9 +8,11 @@ using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -96,6 +98,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				new(Vector2.Distance(rig.Points[swordSegment0].Pos, rig.Points[swordSegment1].Pos)),
 				new(Vector2.Distance(rig.Points[swordSegment1].Pos, rig.Points[swordSegment2].Pos)),
 				}, Assets.Invisible.Value);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("Bits of fallen adventurers stitched together by the thinker's neural energy float aimlessly through the crimson, lashing out against any that strike them. The coalesced energy is able to quickly reform the body when damaged.")
+			});
 		}
 
 		/// <summary>
@@ -403,11 +414,14 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				NPC.velocity.X += 8 * NPC.direction;
 
-				swingTrailCache.Clear();
-
-				for (int i = 0; i < 20; i++)
+				if (!Main.dedServ)
 				{
-					swingTrailCache.Add(NPC.Center + new Vector2(30 * NPC.direction, -70 * 0.95f));
+					swingTrailCache.Clear();
+
+					for (int i = 0; i < 20; i++)
+					{
+						swingTrailCache.Add(NPC.Center + new Vector2(30 * NPC.direction, -70 * 0.95f));
+					}
 				}
 			}
 
@@ -443,7 +457,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						Vector2 prev = NPC.Center + NPC.velocity * k / 2f + SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - 1 - windupDuration + k / 2f) / swingDuration), spline);
 						Vector2 endPoint = NPC.Center + NPC.velocity * k / 2f + SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - windupDuration + k / 2f) / swingDuration), spline);
 
-						swingTrailCache.Add(endPoint);
+						if (!Main.dedServ)
+							swingTrailCache.Add(endPoint);
 
 						float colProg = (AttackTimer - windupDuration) / swingDuration;
 						Dust.NewDustPerfect(endPoint + Main.rand.NextVector2Circular(4f, 4f), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), endPoint.DirectionTo(prev).RotatedBy(0.5f * NPC.direction) * (3 + 3 * prog), 0, new Color(1, colProg, colProg * 0.8f, 0), 0.5f * colProg);
@@ -520,7 +535,12 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			grayFieldWhoAmI = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, NPC.height / 2f), Vector2.Zero, ModContent.ProjectileType<ReusableHallucinationZone>(), 0, 0, Main.myPlayer, 120, 600);
-			NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<RevenantCore>(), 0, NPC.whoAmI);
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<RevenantCore>(), 0, NPC.whoAmI);
+				Main.npc[i].netUpdate = true;
+			}
 
 			return false;
 		}
@@ -598,6 +618,26 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			/*if (State > 0)
 				frameY += 3;*/
 
+			if (NPC.IsABestiaryIconDummy)
+			{
+				CalculateSegmentPoints();
+				Timer = Main.GameUpdateCount;
+
+				for (int k = 0; k < stringPoints.Length; k++)
+				{
+					Vector2 point = stringPoints[k];
+					StaticRigPoint rigPoint = rig.Points[k];
+
+					Vector2 targetPos = point - screenPos;
+					var frame = new Rectangle(rigPoint.Frame * 48, frameY * 52, 48, 52);
+					Color color = Color.White;
+
+					spriteBatch.Draw(tex, targetPos, frame, color, stringRotations[k] + NPC.rotation, new Vector2(24, 26), 1f, SpriteEffects.FlipHorizontally, 0);
+				}
+
+				return false;
+			}
+
 			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 			if (Flipping)
@@ -613,12 +653,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Vector2 point = stringPoints[k];
 				StaticRigPoint rigPoint = rig.Points[k];
 
-				Vector2 targetPos = point - Main.screenPosition;
+				Vector2 targetPos = point - screenPos;
 				var frame = new Rectangle(rigPoint.Frame * 48, frameY * 52, 48, 52);
 				Color color = new(Lighting.GetSubLight(point));
 
 				spriteBatch.Draw(tex, targetPos, frame, color, stringRotations[k] + NPC.rotation, new Vector2(24, 26), 1f, effects, 0);
-				//spriteBatch.Draw(texGlow, targetPos, frame, new Color(100, 100, 100, 100), stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
 			}
 
 			// Enqueues the pixelated links
@@ -648,7 +687,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 							float dist = Vector2.Distance(pos, lastpos);
 							float rot = pos.DirectionTo(lastpos).ToRotation();
 
-							var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 46);
+							var target = new Rectangle((int)(pos.X - screenPos.X), (int)(pos.Y - screenPos.Y), (int)dist, 46);
 							var color = Color.Lerp(new Color(255, 160, 100, 150), new Color(255, 100, 220, 150), 0.5f + MathF.Sin(Main.GameUpdateCount / 4f) * 0.5f);
 
 							spriteBatch.Draw(tex, target, null, color, rot, new Vector2(0, tex.Height / 2f), 0, 0);
@@ -669,7 +708,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					if (effect != null)
 					{
-						var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+						var world = Matrix.CreateTranslation(-screenPos.ToVector3());
 						Matrix view = Matrix.Identity;
 						var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -686,6 +725,19 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			return false;
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			if (!spawnInfo.Player.ZoneCrimson || !StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen) || Main.npc.Any(n => n.type == Type && n.active))
+				return 0;
+
+			bool air = WorldGenHelper.CheckAirRectangle(new Point16(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 4), new Point16(2, 3));
+
+			if (!air)
+				return 0;
+
+			return 0.2f;
 		}
 	}
 }

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static StarlightRiver.Content.Items.Crimson.Graymatter;
 
@@ -42,6 +43,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.DeathSound = SoundID.NPCDeath1;
 			speed = 5;
 			tex = Assets.NPCs.Crimson.GrossquitoElite.Value;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("Gray matter has turned these grossquitoes even more prone to bursting.")
+			});
 		}
 
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
@@ -149,6 +159,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					}
 				});
 			}
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			return spawnInfo.Player.ZoneCrimson && StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen) ? 0.1f : 0;
 		}
 	}
 }

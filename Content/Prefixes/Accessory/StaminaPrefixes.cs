@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Prefixes.Accessory
 {
-	internal abstract class StaminaPrefix : CustomTooltipPrefix
+	internal abstract class StaminaPrefix : ModPrefix
 	{
 		private readonly int power;
 		private readonly string name;
@@ -33,19 +33,17 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 			valueMult *= 1 + 0.05f * power;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.GetHandler().StaminaRegenRate += power;
+			player.GetHandler().StaminaRegenRate += power;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			var newline = new TooltipLine(StarlightRiver.Instance, "StaminaPrefixTip", tip)
+			yield return new TooltipLine(StarlightRiver.Instance, "StaminaPrefixTip", tip)
 			{
 				IsModifier = true
 			};
-
-			tooltips.Add(newline);
 		}
 	}
 

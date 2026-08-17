@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Moonstone;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Loaders;
 using Terraria.Graphics.Effects;
@@ -6,11 +7,11 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-	public class DendriteBar : QuickMaterial
+	public class DendriteBar : BaseMaterial
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
-		public DendriteBar() : base("Dendrite Bar", "This bar might be smarter than you...", 9999, 4000, 2) { }
+		public DendriteBar() : base("Dendrite Bar", "This bar might be smarter than you...", 4000, 2) { }
 
 		public override void AddRecipes()
 		{
@@ -21,11 +22,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	public class ImaginaryTissue : QuickMaterial
+	public class ImaginaryTissue : BaseMaterial
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
-		public ImaginaryTissue() : base("Imaginary Tissue", "As long as you focus on it, its real", 9999, 10000, 4) { }
+		public ImaginaryTissue() : base("Imaginary Tissue", "As long as you focus on it, its real", 10000, 4) { }
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{

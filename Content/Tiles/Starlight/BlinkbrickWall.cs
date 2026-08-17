@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		public override void SetStaticDefaults() { this.QuickSetWall(DustID.Stone, SoundID.Tink.WithPitchOffset(-0.5f), ModContent.ItemType<BlinkbrickWallItem>(), true, new Color(20, 25, 40)); }
 	}
 
-	class BlinkbrickWallItem : QuickWallItem
+	class BlinkbrickWallItem : BaseWallItem
 	{
 		public BlinkbrickWallItem() : base("Blinkbrick Wall", "", ModContent.WallType<BlinkbrickWall>(), ItemRarityID.White, AssetDirectory.StarlightTile) { }
 	}

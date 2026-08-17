@@ -16,8 +16,6 @@ namespace StarlightRiver.Content.Abilities
 
 		private InfusionItem[] infusions = new InfusionItem[Infusion.InfusionSlots];
 		public Dictionary<Type, Ability> unlockedAbilities = new();
-
-		private float stamina;
 		private float staminaMaxBonus;
 		private int staminaRegenCD;
 
@@ -99,9 +97,9 @@ namespace StarlightRiver.Content.Abilities
 		/// </summary>
 		public float Stamina
 		{
-			get => stamina;
+			get;
 			// Can't have less than 0 or more than max stamina.
-			set => stamina = MathHelper.Clamp(value, 0, StaminaMax);
+			set => field = MathHelper.Clamp(value, 0, StaminaMax);
 		}
 
 		//for some reason without specifically setting these values to zero with cloneNewInstances => false and contructor,
@@ -400,8 +398,7 @@ namespace StarlightRiver.Content.Abilities
 			// To ensure fusions always have their owner set to a valid Player.
 			for (int i = 0; i < infusions.Length; i++)
 			{
-				if (infusions[i] != null)
-					infusions[i].Item.playerIndexTheItemIsReservedFor = Player.whoAmI;
+				infusions[i]?.Item.playerIndexTheItemIsReservedFor = Player.whoAmI;
 			}
 		}
 

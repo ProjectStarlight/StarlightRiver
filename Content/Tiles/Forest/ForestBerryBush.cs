@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Packets;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Packets;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -108,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Item.width = 16;
 			Item.height = 16;
 			Item.consumable = true;
-			Item.maxStack = 99;
+			Item.maxStack = 9999;
 			Item.useTime = 15;
 			Item.useAnimation = 15;
 			Item.useStyle = ItemUseStyleID.EatFood;
@@ -134,7 +135,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
 	}
 
-	public class ForestBerryBushItem : QuickTileItem
+	public class ForestBerryBushItem : BaseTileItem
 	{
 		public ForestBerryBushItem() : base("Berry Bush", "Plant to grow your own berries", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }
 	}

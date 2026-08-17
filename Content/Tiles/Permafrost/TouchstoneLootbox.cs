@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Permafrost;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	}
 
 	[SLRDebug]
-	class TouchstoneLootboxItem : QuickTileItem
+	class TouchstoneLootboxItem : BaseTileItem
 	{
 		public TouchstoneLootboxItem() : base("Touchstone Chest Placer", "", "TouchstoneLootbox", 0, AssetDirectory.PermafrostTile) { }
 	}

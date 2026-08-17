@@ -307,11 +307,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				return false;
 			}
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.engaged = value;
-			}
+
+			set => GearEntity?.engaged = value;
 		}
 
 		protected float RotationVelocity
@@ -323,11 +320,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				return 0;
 			}
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.rotationVelocity = value;
-			}
+
+			set => GearEntity?.rotationVelocity = value;
 		}
 
 		protected float RotationOffset
@@ -339,11 +333,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				return 0;
 			}
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.rotationOffset = value;
-			}
+
+			set => GearEntity?.rotationOffset = value;
 		}
 
 		protected GearTileEntity GearEntity
@@ -361,12 +352,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public int GearSize
 		{
-			get => GearEntity?.size ?? 0;
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.size = value % 4;
-			}
+			get => GearEntity?.size ?? 0; set => GearEntity?.size = value % 4;
 		}
 
 		public float Rotation

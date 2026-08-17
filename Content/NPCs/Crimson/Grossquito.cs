@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -59,6 +60,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.aiStyle = -1;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("These strange insects absorb blood from the fetid air of the Crimson, in great enough quantities they have a tendancy to burst when excited.")
+			});
 		}
 
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
@@ -247,6 +257,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					}
 				});
 			}
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			return spawnInfo.Player.ZoneCrimson && !StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen) ? 0.1f : 0;
 		}
 	}
 }

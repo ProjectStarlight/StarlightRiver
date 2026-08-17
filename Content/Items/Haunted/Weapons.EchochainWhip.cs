@@ -1,4 +1,5 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;

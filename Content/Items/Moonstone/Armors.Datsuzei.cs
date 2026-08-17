@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
-	public class Datsuzei : InworldItem
+	public class Datsuzei : ModItem
 	{
 		public static int activationTimer = 0; //static since this is clientside only and there really shouldnt ever be more than one of these in that context
 		public int comboState = 0;
@@ -22,12 +22,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
-		public override bool VisibleInUI => false;
-
 		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += PlayerFrame;
 			On_Main.DrawInterface_30_Hotbar += OverrideHotbar;
+
+			On_Player.dropItemCheck += DontDropSpecialItem;
+			Terraria.UI.On_ItemSlot.LeftClick_ItemArray_int_int += LockMouseToSpecialItem;
+
 			activationTimer = 0;
 			sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles, ParticleSystem.AnchorOptions.UI);
 		}
@@ -59,6 +61,18 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.crit = 10;
+		}
+
+		private void LockMouseToSpecialItem(Terraria.UI.On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+		{
+			if (!(Main.mouseItem.ModItem is Datsuzei && !Main.mouseItem.IsAir))
+				orig(inv, context, slot);
+		}
+
+		private void DontDropSpecialItem(On_Player.orig_dropItemCheck orig, Terraria.Player self)
+		{
+			if (!(Main.mouseItem.ModItem is Datsuzei && !Main.mouseItem.IsAir))
+				orig(self);
 		}
 
 		private void OverrideHotbar(On_Main.orig_DrawInterface_30_Hotbar orig, Main self)

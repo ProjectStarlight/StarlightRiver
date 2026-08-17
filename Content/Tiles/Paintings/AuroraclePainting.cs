@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Paintings
+﻿using StarlightRiver.Content.Items.BaseTypes;
+
+namespace StarlightRiver.Content.Tiles.Paintings
 {
 	class AuroraclePainting : ModTile
 	{
@@ -10,7 +12,7 @@
 		}
 	}
 
-	class AuroraclePaintingItem : QuickTileItem
+	class AuroraclePaintingItem : BaseTileItem
 	{
 		public AuroraclePaintingItem() : base("Prismatic Waters", "'K. Ra'", "AuroraclePainting", 0, AssetDirectory.PaintingTile) { }
 	}

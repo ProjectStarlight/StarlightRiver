@@ -30,16 +30,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void SafeAI()
 		{
-			Vector3 lightColor = new Vector3(0.4f, 0.2f, 0.24f) * (ThisThinker?.ArenaOpacity ?? 1);
+			Vector3 lightColor = new Vector3(0.45f, 0.3f, 0.3f) * (ThisThinker?.ArenaOpacity ?? 1);
 
 			Lighting.AddLight(NPC.Center, lightColor);
 			Lighting.AddLight(NPC.Center + Vector2.UnitX * 80, lightColor * 0.5f);
 			Lighting.AddLight(NPC.Center - Vector2.UnitX * 80, lightColor * 0.5f);
-		}
 
-		public override void DrawBehind(int index)
-		{
-			//Main.instance.DrawCacheNPCsMoonMoon.Add(index);
+			if (glow > 0.9f && Main.rand.NextBool(6))
+			{
+				Dust.NewDustPerfect(NPC.Center + Vector2.UnitX * Main.rand.NextFloat(-130, 130), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Vector2.Normalize(NPC.Center - targetPos) * Main.rand.NextFloat(6), 0, new Color(0.25f, 0.1f, 0.1f, 0f), Main.rand.NextFloat(0.05f, 0.1f));
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -47,21 +47,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			float dist = Vector2.Distance(NPC.Center, targetPos);
 
 			Texture2D tex = Assets.Bosses.TheThinkerBoss.BrainPlatform.Value;
-			LightingBufferRenderer.DrawWithLighting(tex, NPC.position - Main.screenPosition, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1));
+			LightingBufferRenderer.DrawWithLighting(tex, NPC.position - screenPos, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1));
 
-			Texture2D glowTex = Assets.Bosses.TheThinkerBoss.BrainPlatformGlow.Value;
-			Texture2D glowTex2 = Assets.Masks.GlowAlpha.Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.15f;
 
 			Rectangle target = NPC.Hitbox;
-			target.Offset((-Main.screenPosition).ToPoint());
+			target.Offset((-screenPos).ToPoint());
 			target.Height = tex.Height;
 
-			spriteBatch.Draw(glowTex2, target, null, glowColor, 0, default, 0, 0);
+			spriteBatch.Draw(glowTex, target, null, glowColor, 0, default, 0, 0);
 
-			spriteBatch.Draw(glowTex, targetPos - NPC.Size / 2f - Main.screenPosition, glowColor);
-			target = new Rectangle((int)(targetPos.X - NPC.width / 2 - Main.screenPosition.X), (int)(targetPos.Y - NPC.height / 2 - Main.screenPosition.Y), tex.Width, tex.Height);
-			spriteBatch.Draw(glowTex2, target, null, glowColor, 0, default, 0, 0);
+			target = new Rectangle((int)(targetPos.X - NPC.width / 2 - screenPos.X), (int)(targetPos.Y - NPC.height / 2 - screenPos.Y), tex.Width, tex.Height);
+			spriteBatch.Draw(glowTex, target, null, glowColor, 0, default, 0, 0);
 
 			return false;
 		}

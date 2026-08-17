@@ -4,12 +4,13 @@
 	<PropertyGroup>
 		<AssemblyName>StarlightRiver</AssemblyName>
 		<TargetFramework>net8.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
+		<LangVersion>preview</LangVersion>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Platforms>AnyCPU;x64;x86</Platforms>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AssGenConfig.txt" />
+		<None Remove="effects\source\Decay.fx" />
 		<None Remove="effects\source\RadialFill.fx" />
 		<None Remove="Localization\en-US_Mods.StarlightRiver.Deaths.hjson" />
 	</ItemGroup>
@@ -28,7 +29,6 @@
 		</Reference>
 
 		<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="3.0.0" />
-		<AdditionalFiles Include="**/*.png" />
 
 	</ItemGroup>
 	<ItemGroup>
@@ -39,6 +39,10 @@
 		<Folder Include="Assets\Healthbars\" />
 		<Folder Include="Content\NPCs\Vitric\GlassTrial\" />
 		<Folder Include="Localization\Hints\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Content\Tiles\Crimson\MeatballTreeChain.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

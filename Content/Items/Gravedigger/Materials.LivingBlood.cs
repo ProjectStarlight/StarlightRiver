@@ -1,10 +1,11 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
-	public class LivingBlood : QuickMaterial
+	public class LivingBlood : BaseMaterial
 	{
 		public override void Load()
 		{
@@ -23,7 +24,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		}
 
-		public LivingBlood() : base("Living Blood", "", 999, 50, 2, AssetDirectory.GravediggerItem) { }
+		public LivingBlood() : base("Living Blood", "", 50, 2, AssetDirectory.GravediggerItem) { }
 
 		public static void DropLivingBlood(NPC npc, NPCLoot npcLoot)
 		{

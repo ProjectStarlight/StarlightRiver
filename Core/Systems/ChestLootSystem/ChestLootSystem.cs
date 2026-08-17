@@ -187,6 +187,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 
 			return Item;
 		}
+
 		private void AddChestItem(ChestLootInfo info, Chest chest)
 		{
 			int stack = WorldGen.genRand.Next(info.stackRange.Item1, info.stackRange.Item2 + 1);
@@ -221,8 +222,8 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 			{
 				Item Item = chest.item[i];
 
-				// Checks if the "main" chest Item is replaceable (weapon or accessory, and not stackable).
-				if (Item.accessory || Item.damage > 0 && Item.notAmmo && Item.maxStack == 1)
+				// Checks if the "main" chest Item is an accessory
+				if (Item.accessory)
 				{
 					type = chest.item[i].type;
 					break;

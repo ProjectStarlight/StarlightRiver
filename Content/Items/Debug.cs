@@ -1,17 +1,23 @@
+using JetBrains.Annotations;
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.Tiles.BaseTypes;
+using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Content.Tiles.Misc;
 using StarlightRiver.Content.Tiles.Starlight;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.ArmatureSystem;
 using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
+using System;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.WorldBuilding;
 
@@ -20,7 +26,7 @@ namespace StarlightRiver.Content.Items
 	[SLRDebug]
 	class DebugStick : ModItem
 	{
-		readonly Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
+		//readonly Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
 
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
@@ -53,21 +59,127 @@ namespace StarlightRiver.Content.Items
 		{
 			ObservatoryBiome.fade = 1f;
 			return;
+		}
 
-			player.GetHandler().StaminaMaxBonus = 10;
+		public void PlaceChain(int startX, int startY, int endX, int endY)
+		{
+			WorldGen.PlaceTile(startX, startY, ModContent.TileType<MeatballTreeChain>());
+			var chain = Framing.GetTileSafely(startX, startY);
+			chain.TileFrameX = (short)(endX - startX);
+			chain.TileFrameY = (short)(endY - startY);
+		}
 
-			int x = StarlightWorld.vitricBiome.X - 37;
+		public void JoinTrees(int leftX, int leftY, int rightX, int rightY)
+		{
+			WorldGen.PlaceTile(leftX, leftY, ModContent.TileType<MeatballTreeTopper>());
+			WorldGen.PlaceTile(rightX, rightY, ModContent.TileType<MeatballTreeTopper>());
 
-			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
-
+			if (WorldGen.genRand.NextBool(3, 4))
+			{
+				if (leftY > rightY)
+					PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
+				else
+					PlaceChain(rightX - 1, rightY, leftX + 1, leftY);
+			}
 		}
 
 		public override bool? UseItem(Player player)
 		{
-			player.GetHandler().unlockedAbilities.Clear();
+			foreach(NPC npc in Main.npc)
+			{
+				if (npc.boss)
+				{
+					Main.NewText($"Boss: {npc.FullName}, {npc.whoAmI}, {npc.active}, {npc.position}, {Vector2.Distance(npc.Center, player.Center)}");
+
+					for (int k = 0; k < 100; k++)
+						Dust.NewDust(npc.position, npc.width, npc.height, DustID.MagicMirror);
+				}
+			}
 			return true;
 
-			int n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
+			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+			return true;
+
+			int lastX = 0;
+			int lastY = 0;
+
+			for (int x = 0; x < Main.maxTilesX; x++)
+			{
+				for (int y = 0; y < Main.maxTilesY; y++)
+				{
+					var tile = Framing.GetTileSafely(x, y);
+
+					var l = Framing.GetTileSafely(x - 1, y);
+					var r = Framing.GetTileSafely(x + 1, y);
+
+					if (tile.HasTile && tile.TileType == TileID.Trees && !l.HasTile && !r.HasTile && WorldGenHelper.ScanForTypeDown(x, y, TileID.CrimsonGrass))
+					{
+						if (lastX == 0 && lastY == 0)
+						{
+							lastX = x;
+							lastY = y;
+						}
+						else 
+						{
+							if (x - lastX < 30 && Math.Abs(y - lastY) < 20)
+							{
+								JoinTrees(lastX, lastY - 1, x, y - 1);
+							}
+
+							lastX = x;
+							lastY = y;
+							x += 15;
+							break;
+						}
+					}
+				}
+			}
+
+			return true;
+
+			/*int off = 20;
+			int yOff = Main.rand.Next(-10, 10);
+
+			int x = (int)(Main.MouseWorld.X / 16);
+			int y = (int)(Main.MouseWorld.Y / 16);
+
+			int thisY = y + 1;
+			while(!Framing.GetTileSafely(x, thisY).HasTile)
+			{
+				Tile tile = Framing.GetTileSafely(x, thisY);
+				tile.TileType = TileID.Trees;
+				tile.HasTile = true;
+				thisY++;
+			}
+
+			thisY = y+ yOff + 1;
+			while (!Framing.GetTileSafely(x + off + 1, thisY).HasTile)
+			{
+				Tile tile = Framing.GetTileSafely(x + off + 1, thisY);
+				tile.TileType = TileID.Trees;
+				tile.HasTile = true;
+				thisY++;
+			}
+
+			WorldGen.PlaceTile(x, y, ModContent.TileType<MeatballTreeTopper>());
+
+			WorldGen.PlaceTile(x + 1, y + 1, ModContent.TileType<MeatballTreeChain>());
+
+			var chain = Framing.GetTileSafely(x + 1, y + 1);
+			chain.TileFrameX = (short)(off - 1);
+			chain.TileFrameY = (short)(yOff);
+
+			WorldGen.PlaceTile(x + 1, y, ModContent.TileType<MeatballTreeChain>());
+
+			var chain2 = Framing.GetTileSafely(x + 1, y);
+			chain2.TileFrameX = (short)(off - 1);
+			chain2.TileFrameY = (short)(yOff + 1);
+
+			WorldGen.PlaceTile(x + off + 1, y + yOff, ModContent.TileType<MeatballTreeTopper>());
+
+			return true;*/
+
+			/*int n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
 			Main.npc[n].velocity.X = 3.5f;
 			n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y + 500, ModContent.NPCType<TestCollider>());
 			Main.npc[n].velocity.X = 3.5f;
@@ -127,7 +239,7 @@ namespace StarlightRiver.Content.Items
 				}
 			}
 
-			return true;
+			return true;*/
 		}
 	}
 
@@ -173,9 +285,54 @@ namespace StarlightRiver.Content.Items
 
 		}
 
+		private Item SetupItem(int type, int stack, bool isRelic)
+		{
+			var Item = new Item(type, stack);
+
+			Item.GetGlobalItem<RelicItem>().isRelic = isRelic;
+			Item.Prefix(ItemLoader.ChoosePrefix(Item, Main.rand));
+
+			return Item;
+		}
+
+		private bool PlaceDisplayCaseOn(Chest chest)
+		{
+			int type = ItemID.None;
+
+			for (int i = 0; i < chest.item.Length; i++)
+			{
+				Item Item = chest.item[i];
+
+				// Checks if the "main" chest Item is an accessory
+				if (Item.accessory)
+				{
+					type = chest.item[i].type;
+					break;
+				}
+			}
+
+			if (type != ItemID.None)
+			{
+				Item Item = SetupItem(type, 1, true);
+
+				WorldGenHelper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
+				TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
+				(TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
+				return true;
+			}
+
+			return false;
+		}
+
 		public override bool? UseItem(Player player)
 		{
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+
+			foreach (Chest chest in Main.chest)
+			{
+				PlaceDisplayCaseOn(chest);
+			}
+
 			return true;
 
 			ObservatorySystem.pylonAppearsOn = false;
@@ -343,7 +500,7 @@ namespace StarlightRiver.Content.Items
 
 				var target4 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400, Main.screenWidth / 10, Main.screenHeight / 10);
 				var target5 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
-				var target6 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 * 2 + 40, PlayerTarget.Target.Width / 2, PlayerTarget.Target.Height / 2);
+				//var target6 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 * 2 + 40, PlayerTarget.Target.Width / 2, PlayerTarget.Target.Height / 2);
 
 				target1.Inflate(6, 6);
 				UIHelper.DrawBox(spriteBatch, target1, Color.Gray);
@@ -370,10 +527,10 @@ namespace StarlightRiver.Content.Items
 				target5.Inflate(-6, -6);
 				spriteBatch.Draw(LightingBuffer.tileLightingTarget.RenderTarget, target5, Color.White);
 
-				target6.Inflate(6, 6);
+				/*target6.Inflate(6, 6);
 				UIHelper.DrawBox(spriteBatch, target6, Color.Gray);
 				target6.Inflate(-6, -6);
-				spriteBatch.Draw(PlayerTarget.Target, target6, Color.White);
+				spriteBatch.Draw(PlayerTarget.Target, target6, Color.White);*/
 			}
 
 			Main.spriteBatch.End();

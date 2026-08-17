@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -22,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	internal class NPCSpawnerItem : QuickTileItem
+	internal class NPCSpawnerItem : BaseTileItem
 	{
 		public NPCSpawnerItem() : base("NPC Spawner", "", "NPCSpawner", 1, AssetDirectory.VitricTile, false) { }
 	}

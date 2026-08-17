@@ -1052,7 +1052,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					{
 						RandomizeTarget();
 
-						tentacles[k].Center = new Vector2(Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).Center.X + (k % 2 == 0 ? -500 : 500), NPC.Center.Y + Main.rand.Next(-200, 200));
+						tentacles[k].Center = new Vector2(ArenaActor.latestActor.NPC.Center.X + (k % 2 == 0 ? -500 : 500), NPC.Center.Y + Main.rand.Next(-200, 200));
 						tentacle.basePoint = tentacles[k].Center;
 						tentacle.movementTarget = Main.player[NPC.target].Center;
 

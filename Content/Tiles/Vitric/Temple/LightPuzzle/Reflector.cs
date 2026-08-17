@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Core.Loaders;
@@ -259,7 +260,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 	}
 
 	[SLRDebug]
-	class ReflectorItem : QuickTileItem
+	class ReflectorItem : BaseTileItem
 	{
 		public ReflectorItem() : base("Reflector", "{{Debug}} Item", "Reflector") { }
 	}

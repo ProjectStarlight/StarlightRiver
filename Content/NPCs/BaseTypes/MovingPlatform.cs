@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("");
+			NPCID.Sets.ImmuneToAllBuffs[Type] = true;
 		}
 
 		public sealed override void SetDefaults()

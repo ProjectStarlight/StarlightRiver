@@ -1,11 +1,12 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
-	internal class DendriteItem : QuickTileItem
+	internal class DendriteItem : BaseTileItem
 	{
 		public DendriteItem() : base("Dendrite", "Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*", "Dendrite", 0, "StarlightRiver/Assets/Tiles/Crimson/") { }
 	}

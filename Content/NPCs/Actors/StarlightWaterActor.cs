@@ -48,8 +48,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public void ResetConversion()
 		{
-			if (targetItem != null)
-				targetItem.GetGlobalItem<TransformableItem>().starlightWaterActor = null;
+			targetItem?.GetGlobalItem<TransformableItem>().starlightWaterActor = null;
 
 			targetItem = null;
 			targetItemTransformType = 0;

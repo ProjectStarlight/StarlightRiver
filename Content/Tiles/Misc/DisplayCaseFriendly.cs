@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
@@ -48,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 		}
 	}
 
-	class DisplayCaseFriendlyItem : QuickTileItem
+	class DisplayCaseFriendlyItem : BaseTileItem
 	{
 		public DisplayCaseFriendlyItem() : base("Display Case", "Can hold an Item for glamorous display", "DisplayCaseFriendly", 2, "StarlightRiver/Assets/Tiles/Misc/") { }
 	}

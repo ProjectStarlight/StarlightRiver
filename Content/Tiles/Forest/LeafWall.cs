@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
 	}
 
-	public class LeafWallItem : QuickWallItem
+	public class LeafWallItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.ForestTile + Name;
 

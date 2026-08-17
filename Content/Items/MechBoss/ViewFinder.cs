@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
@@ -63,6 +64,15 @@ namespace StarlightRiver.Content.Items.MechBoss
 			recipe.AddIngredient(ItemID.SoulofSight, 15);
 			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.Register();
+		}
+
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as ViewFinder;
+
+			clone.targets.AddRange(targets);
+			clone.newTargets.AddRange(newTargets);
+			return clone;
 		}
 
 		/// <summary>
@@ -202,7 +212,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var spike = Assets.Misc.SpikeTell.Value;
+			Texture2D spike = Assets.Misc.SpikeTell.Value;
 			var spikeFrame = new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height);
 
 			float opacity = 1f;

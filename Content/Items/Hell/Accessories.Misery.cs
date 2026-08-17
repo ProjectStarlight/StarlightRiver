@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.BuriedArtifacts;
 using StarlightRiver.Core.Systems.InoculationSystem;
 using System;
@@ -27,6 +28,14 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			DisplayName.SetDefault("Misery's Company");
 			Tooltip.SetDefault("Nearby enemies have defense and inoculation equal to yours");
+		}
+
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as Misery;
+
+			clone.seenNpcs.AddRange(seenNpcs);
+			return clone;
 		}
 
 		private void RecordStats(StarlightPlayer player)

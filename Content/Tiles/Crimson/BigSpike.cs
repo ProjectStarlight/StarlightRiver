@@ -61,8 +61,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			tile.TileFrameX = (short)(angle % 6.28f * 100);
 
-			if (WorldGen.generatingWorld)
-				tile.TileFrameY = (short)Main.rand.Next(6);
+			//if (WorldGen.generatingWorld)
+				tile.TileFrameY = (short)Main.rand.Next(4);
 
 			return false;
 		}
@@ -77,11 +77,11 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			float angle = Parent.TileFrameX / 100f + 1.57f / 2f;
 
 			Texture2D tex = Assets.Tiles.Crimson.BigSpike.Value;
-			var source = new Rectangle(0, Parent.TileFrameY * 120, 160, 120);
-			var origin = new Vector2(48, 120 - 64);
+			var source = new Rectangle(0, Parent.TileFrameY * 128, 288, 128);
+			var origin = new Vector2(96, 64);
 			Vector2 pos = Center - Main.screenPosition;
 
-			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle - 0.25f, origin, 1f);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle - 0.8f, origin, 1f);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			if (!SetBonusActive)//removed GetModPlayer since these can directly access it here
 				return;
 
-			if (!CustomHooks.PlayerTarget.canUseTarget)
+			if (!PlayerTargetSystem.canUseTarget)
 				return;
 
 			float fadeOut = 1;
@@ -89,7 +90,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 						Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 2.2f);
 						Color color = Color.White * (opacity - sin * 0.1f) * 0.9f;
 
-						spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
+						spriteBatch.Draw(PlayerTargetSystem.Target, PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI) + dir, PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
 					}
 				}
 				else if (ActivationCounter > 0)
@@ -107,7 +108,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 					{
 						Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (sin * 8f);
 
-						spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White * 0.25f);
+						spriteBatch.Draw(PlayerTargetSystem.Target, PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI) + dir, PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White * 0.25f);
 					}
 				}
 			}

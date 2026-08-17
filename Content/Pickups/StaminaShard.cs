@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
@@ -128,7 +129,7 @@ namespace StarlightRiver.Content.Pickups
 	}
 
 	[SLRDebug]
-	class StaminaShardTileItem : QuickTileItem
+	class StaminaShardTileItem : BaseTileItem
 	{
 		public override string Texture => "StarlightRiver/Assets/Abilities/Stamina1";
 

@@ -185,6 +185,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (ExtraGrayAuraRadius > -140)
 					ExtraGrayAuraRadius = -140;
 
+				NPC.life = NPC.lifeMax;
+
 				return;
 			}
 			else

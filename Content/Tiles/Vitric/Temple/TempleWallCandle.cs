@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	public class TempleWallCandleItem : QuickTileItem
+	public class TempleWallCandleItem : BaseTileItem
 	{
 		public TempleWallCandleItem() : base("Temple Wall Candle", "", "TempleWallCandle", ItemRarityID.White, "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/") { }
 	}

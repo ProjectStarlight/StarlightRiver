@@ -66,11 +66,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void AI()
 		{
+			if (!thinker.active || thinker.type != ModContent.NPCType<TheThinker>())
+				NPC.active = false;
+
+			if (thinker?.ModNPC is TheThinker think && (!think.brain.active || think.brain.type != ModContent.NPCType<DeadBrain>()))
+				NPC.active = false;
+
 			NPC.realLife = thinker?.whoAmI ?? NPC.realLife;
 
-			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;
-			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.05f;
-			float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.03f;
+			float r = 0.9f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;
+			float g = 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.05f;
+			float b = 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.03f;
 			var color = new Color(r, g, b);
 
 			if (thinker?.life <= thinker?.lifeMax / 2f)
@@ -80,7 +86,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				color = new Color(255, 60, 75) * (heartBeat + 0.65f);
 			}
 
-			Lighting.AddLight(NPC.Center, color.ToVector3() * 0.5f);
+			Lighting.AddLight(NPC.Center, color.ToVector3() * 1f);
 		}
 
 		public override void DrawBehind(int index)
@@ -100,10 +106,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;
 			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.05f;
 			float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.03f;
-			var color = new Color(r, g, b);
-
-			Color glowColor = color;
-			glowColor.A = 0;
+			Color glowColor = new Color(r, g, b, 0);
 
 			float t = Main.GameUpdateCount * 0.02f;
 			float heartBeat = Heartbeat(t) * 0.25f;
@@ -111,16 +114,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (thinker?.life <= thinker?.lifeMax / 2f)
 			{
 				heartBeat = Heartbeat(t * 1.5f) * 0.35f;
-				color = new Color(255, 60, 75) * (heartBeat + 0.65f);
 				glowColor = new Color(255, 60, 75) * (heartBeat + 0.65f);
 				glowColor.A = 0;
 			}
+
+			Rectangle frame = new Rectangle(0, (int)(Main.GameUpdateCount / 3) % 4 * 48, 48, 48);
 
 			spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, glowColor, 0, glow.Size() / 2f, 1 + heartBeat, 0, 0);
 			spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, glowColor, 0, glow.Size() / 2f, 0.8f + heartBeat, 0, 0);
 			spriteBatch.Draw(star, NPC.Center - Main.screenPosition, null, glowColor * 1.5f, Main.GameUpdateCount * 0.1f, star.Size() / 2f, 0.22f + heartBeat, 0, 0);
 			spriteBatch.Draw(star, NPC.Center - Main.screenPosition, null, glowColor * 1.5f, Main.GameUpdateCount * -0.15f, star.Size() / 2f, 0.18f + heartBeat, 0, 0);
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 1 + heartBeat, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor, 0, Vector2.One * 24, 1 + heartBeat, 0, 0);
 
 			return false;
 		}

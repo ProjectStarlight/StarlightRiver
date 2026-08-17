@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.IO;
 using Terraria.Audio;
@@ -195,12 +196,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	internal class CoolmiteSmolItem : QuickCritterItem
+	internal class CoolmiteSmolItem : BaseCritterItem
 	{
 		public CoolmiteSmolItem() : base("Coolmini", "Sharp edges! Watch your fingers.", Item.sellPrice(silver: 5), ItemRarityID.Orange, NPCType<CoolmiteSmol>(), AssetDirectory.VitricItem) { }
 	}
 
-	internal class CoolmiteLargeItem : QuickCritterItem
+	internal class CoolmiteLargeItem : BaseCritterItem
 	{
 		public CoolmiteLargeItem() : base("Coolmismer", "High intensity beauty! Avoid eye and skin exposure.", Item.sellPrice(silver: 25), ItemRarityID.Orange, NPCType<CoolmiteLarge>(), AssetDirectory.VitricItem) { }
 	}

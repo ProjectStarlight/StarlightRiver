@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Food;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Food;
 using StarlightRiver.Content.Packets;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
 	}
 
-	public class CommonVegetablesItem : QuickTileItem
+	public class CommonVegetablesItem : BaseTileItem
 	{
 		public CommonVegetablesItem() : base("Common Vegetable Seeds", "Plant to grow your own veggies", "CommonVegetables", 1, AssetDirectory.ForestTile) { }
 	}

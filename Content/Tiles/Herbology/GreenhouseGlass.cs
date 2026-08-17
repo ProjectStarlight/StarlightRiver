@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Moonstone;
 using Terraria.ID;
 
@@ -224,7 +225,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 		}
 	}
 
-	public class GreenhouseGlassItem : QuickTileItem
+	public class GreenhouseGlassItem : BaseTileItem
 	{
 		public GreenhouseGlassItem() : base("Greenhouse Glass", "Speeds up the growth of any plant below it\nNeeds a 10 blocks of clear area or transparent blocks above it", "GreenhouseGlass", 1, AssetDirectory.HerbologyTile) { }
 
@@ -254,7 +255,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 		}
 	}
 
-	public class GreenhouseWallItem : QuickWallItem
+	public class GreenhouseWallItem : BaseWallItem
 	{
 		public GreenhouseWallItem() : base("Greenhouse Glass Wall", "Fancy!", ModContent.WallType<GreenhouseWall>(), 0, AssetDirectory.HerbologyTile) { }
 

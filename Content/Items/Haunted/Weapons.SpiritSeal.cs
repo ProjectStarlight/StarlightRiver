@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System;
@@ -141,8 +141,8 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			if (Inflicted(npc))
 			{
-				var tex = Assets.Items.Haunted.SpiritSealBuff.Value;
-				var glow = Assets.Masks.GlowAlpha.Value;
+				Texture2D tex = Assets.Items.Haunted.SpiritSealBuff.Value;
+				Texture2D glow = Assets.Masks.GlowAlpha.Value;
 
 				spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(0.4f, 0.5f, 0.25f) * 0.8f, 0, tex.Size() / 2f, 2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f, 0, 0);
 				spriteBatch.Draw(glow, npc.Center - Main.screenPosition, null, new Color(0.3f, 0.5f, 0.2f, 0.0f) * 0.8f, 0, glow.Size() / 2f, 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f, 0, 0);

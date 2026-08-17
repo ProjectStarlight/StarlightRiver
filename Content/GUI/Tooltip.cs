@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			if (text is null || text.Length <= 0)
+			if (text is null || text.Length <= 0 || tooltip is null)
 				return;
 
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;

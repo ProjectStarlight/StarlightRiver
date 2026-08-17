@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.height = 40;
 			Item.value = Item.sellPrice(silver: 10);
 			Item.rare = ItemRarityID.Blue;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
 			Item.autoReuse = true;
 			Item.consumable = true;
 			Item.useAnimation = 15;

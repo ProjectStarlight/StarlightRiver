@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("AuroracleRelicItem").Type));
 		}
 
-		public override void BossLoot(ref string name, ref int potionType)
+		public override void BossLoot(ref int potionType)
 		{
 			for (int k = 0; k < Main.maxPlayers; k++)
 			{
@@ -483,7 +483,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Animate(12, 0, 8);
 
 			if (arenaActor is null || !arenaActor.active)
-				arenaActor = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
+				arenaActor = ArenaActor.latestActor.NPC;
 
 			if (Phase > (int)AIStates.SpawnAnimation)
 				FindEssentialNPCs();
@@ -840,7 +840,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					GlobalTimer++;
 
 					if (GlobalTimer % 6 == 0)
-						Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).ai[0]++; //rising water
+						ArenaActor.latestActor.WaterLevel++; //rising water
 
 					AttackTimer++;
 

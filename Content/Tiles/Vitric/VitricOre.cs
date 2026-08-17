@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -25,6 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileID.Sets.Ore[Type] = true;
 			Main.tileSpelunker[Type] = true;
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+			Main.tileFrameImportant[Type] = true;
 
 			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
 			this.QuickSetFurniture(2, 3, DustType<GlassGravity>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
@@ -201,13 +203,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	}
 
 	[SLRDebug]
-	class VitricOreItem : QuickTileItem
+	class VitricOreItem : BaseTileItem
 	{
 		public VitricOreItem() : base("Vitric Ore Crystal Item", "", "VitricOre", 1, AssetDirectory.VitricTile, false) { }
 	}
 
 	[SLRDebug]
-	class VitricOreFloatItem : QuickTileItem
+	class VitricOreFloatItem : BaseTileItem
 	{
 		public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", "VitricOreFloat", 1, AssetDirectory.VitricTile, false) { }
 	}

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.height = 40;
 			Item.value = Item.sellPrice(gold: 1);
 			Item.rare = ItemRarityID.Orange;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
 			Item.autoReuse = true;
 		}
 

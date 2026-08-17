@@ -1,4 +1,5 @@
-﻿using Terraria.Graphics;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.Graphics;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Starlight
@@ -29,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		}
 	}
 
-	class ChartGrateWallItem : QuickWallItem
+	class ChartGrateWallItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.StarlightTile + Name;
 

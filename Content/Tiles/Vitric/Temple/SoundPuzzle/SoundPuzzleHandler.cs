@@ -70,11 +70,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 
 		public override void PostDrawTiles()
 		{
-			var one = Assets.Tiles.Vitric.OldCeirosOrnament0.Value;
-			var two = Assets.Tiles.Vitric.OldCeirosOrnament3.Value;
-			var three = Assets.Tiles.Vitric.OldCeirosOrnament1.Value;
-			var four = Assets.Tiles.Vitric.OldCeirosOrnament2.Value;
-			var blank = Assets.Bosses.VitricBoss.VitricBossCrystal.Value;
+			Texture2D one = Assets.Tiles.Vitric.OldCeirosOrnament0.Value;
+			Texture2D two = Assets.Tiles.Vitric.OldCeirosOrnament3.Value;
+			Texture2D three = Assets.Tiles.Vitric.OldCeirosOrnament1.Value;
+			Texture2D four = Assets.Tiles.Vitric.OldCeirosOrnament2.Value;
+			Texture2D blank = Assets.Bosses.VitricBoss.VitricBossCrystal.Value;
 
 			Vector2 pos = StarlightWorld.VitricBossArena.BottomLeft() * 16 + new Vector2(-762, 1424) - Main.screenPosition;
 

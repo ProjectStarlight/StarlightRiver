@@ -1,7 +1,13 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.Hovers;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -69,13 +75,25 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			toRender.Add(this);
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("These strange infested eyes take zombies as hosts, puppeting them around as they search for threats to the gray matter that gives them life.")
+			});
+		}
+
 		public override void AI()
 		{
 			Timer++;
 
 			// check for and set home X position if needed
-			if (homeX == 0)
+			if (homeX == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
 				homeX = NPC.Center.X;
+				NPC.netUpdate = true;
+			}
 
 			if (aggroFlashTimer > 0)
 				aggroFlashTimer--;
@@ -146,6 +164,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				case ThoughtPoliceState.Aggroed:
 
+					Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.2f, 0.2f));
+
 					if (localScanOpacity > 0)
 						localScanOpacity -= 0.1f;
 
@@ -178,13 +198,16 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				case ThoughtPoliceState.Attack:
 
+					Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.2f, 0.2f));
+
 					NPC.velocity *= 0.95f;
 
 					if (Timer == 30)
 					{
 						NPC.velocity *= 0f;
 
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(Target.Center) * 5, ModContent.ProjectileType<ThoughtPoliceCage>(), NPC.damage, 0, Main.myPlayer);
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(Target.Center) * 5, ModContent.ProjectileType<ThoughtPoliceCage>(), NPC.damage, 0, Main.myPlayer);
 					}
 
 					if (Timer >= 60)
@@ -198,6 +221,54 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 		}
 
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			if (State == ThoughtPoliceState.Idle)
+			{
+				NPC.target = player.whoAmI;
+				Timer = 0;
+				State = ThoughtPoliceState.Aggroed;
+				aggroFlashTimer = MAX_FLASH_TIMER;
+				NPC.netUpdate = true;
+			}
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			if (State == ThoughtPoliceState.Idle)
+			{
+				NPC.target = projectile.owner;
+				Timer = 0;
+				State = ThoughtPoliceState.Aggroed;
+				aggroFlashTimer = MAX_FLASH_TIMER;
+				NPC.netUpdate = true;
+			}
+		}
+
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (State == ThoughtPoliceState.Idle)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					Timer = 0;
+					State = ThoughtPoliceState.Aggroed;
+					aggroFlashTimer = MAX_FLASH_TIMER;
+					NPC.netUpdate = true;
+				}
+			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(homeX);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			homeX = reader.ReadSingle();
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = Assets.NPCs.Crimson.ThoughtPolice.Value;
@@ -206,13 +277,13 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			if (State == ThoughtPoliceState.Aggroed || State == ThoughtPoliceState.Attack)
 			{
 				Texture2D aura = Assets.Bosses.TheThinkerBoss.HallucionationHazard.Value;
-				float pulse = 1.1f + MathF.Sin(Timer * 0.1f) * 0.1f;
-				float colorPulse = 1f + MathF.Sin(Timer * 0.1f) * 0.5f;
+				float pulse = 1.05f + MathF.Sin(Timer * 0.1f) * 0.05f;
+				float colorPulse = 1f + MathF.Sin(Timer * 0.1f) * 0.35f;
 
-				spriteBatch.Draw(aura, NPC.Center - Main.screenPosition, null, new Color(255, 80, 80) * 0.35f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
+				spriteBatch.Draw(aura, NPC.Center - screenPos, null, new Color(255, 80, 80) * 0.25f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
 			}
 
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
 
 			if (aggroFlashTimer > 0)
 			{
@@ -220,7 +291,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				float prog = (MAX_FLASH_TIMER - aggroFlashTimer) / MAX_FLASH_TIMER;
 				Color color = new Color(255, 100, 100, 0) * (prog < 0.25f ? Eases.EaseQuadIn(prog / 0.25f) : 1f - Eases.EaseCircularOut((prog - 0.25f) / 0.75f));
 
-				spriteBatch.Draw(shape, NPC.Center - Main.screenPosition, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(shape, NPC.Center - screenPos, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
 			}
 
 			return false;
@@ -239,10 +310,55 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					var color = new Color(255, 100, 100, (byte)(125 * tp.localScanOpacity));
 
 					spriteBatch.Draw(tex, pos, null, color, tp.AimRotation + 1.57f / 2f, origin, 1f, 0, 0);
+
+					Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
+
+					if (effect != null)
+					{
+						Texture2D over = Assets.NPCs.Crimson.ThoughtPoliceMask.Value;
+
+						effect.Parameters["u_color"].SetValue(Vector3.One);
+						effect.Parameters["u_fade"].SetValue(Vector3.One);
+						effect.Parameters["u_resolution"].SetValue(over.Size());
+						effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.01f);
+
+						spriteBatch.End();
+						spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+						var frame = new Rectangle((int)tp.Variant * 104, (int)(tp.Timer / 10 % 6) * 148, 104, 148);
+						spriteBatch.Draw(over, tp.NPC.Center - Main.screenPosition, frame, Color.White, tp.NPC.rotation, frame.Size() / 2f, tp.NPC.scale, 0, 0);
+
+						spriteBatch.End();
+						spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+					}
 				}
 
 				toRender.RemoveAll(n => n is null || !n.NPC.active);
 			}
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			if (!spawnInfo.Player.ZoneCrimson || !StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen) || spawnInfo.SpawnTileY > Main.worldSurface)
+				return 0;
+
+			bool overlap = Main.npc.Any(n =>
+			{
+				if (n.active && n.ModNPC is ThoughtPolice tp)
+				{
+					if (Math.Abs(spawnInfo.SpawnTileX - tp.homeX) < 30)
+						return true;
+
+					return false;
+				}
+
+				return false;
+			});
+
+			if (overlap)
+				return 0;
+
+			return 0.2f;
 		}
 	}
 }

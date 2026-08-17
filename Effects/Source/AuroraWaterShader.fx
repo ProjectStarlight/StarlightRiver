@@ -1,8 +1,10 @@
 ﻿#include "Common.fxh"
 
-float time;
-float2 screenSize;
-float2 offset;
+sampler uImage0 : register(s0);
+float uTime;
+float2 uImageSize0;
+float2 uImageSize1;
+float4x4 transform;
 
 texture sampleTexture;
 sampler2D samplerTex = sampler_state { texture = <sampleTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
@@ -10,24 +12,63 @@ sampler2D samplerTex = sampler_state { texture = <sampleTexture>; magfilter = LI
 texture sampleTexture2;
 sampler2D samplerTex2 = sampler_state { texture = <sampleTexture2>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
+texture gameTexture;
+sampler2D gameTex = sampler_state { texture = <gameTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = clamp; AddressV = clamp; };
+
+float2 offset;
+
+float4 GetRainbow(float2 coords)
+{
+    float progress = (coords.x + coords.y) * 10.0;
+
+    float r = 40.0 * (1.0 + sin(uTime + progress * 0.2));
+    float g = 46.0 * (1.0 + sin(HALF_PI + uTime + progress));
+    float b = 72.0;
+    
+    return float4(r, g, b, 0.0) * 0.005;
+}
+
 float4 PixelShaderFunction(float4 screenSpace : TEXCOORD0) : COLOR0
 {
-    float2 st = screenSpace.xy;
-    float2 off = float2(sin(time + st.y * 200.0 + offset.y * 100.0), sin(time + st.x * 200.0 + offset.x * 100.0)) / screenSize;
+    float2 coords = screenSpace.xy;
+    float2 off = float2(sin(uTime + coords.y * 200.0 + offset.y * 100.0), sin(uTime + coords.x * 200.0 + offset.x * 100.0)) / uImageSize1;
+    
+    float2 originalCoords = coords;
+    
+    coords += off;
+    
+    float2 pixel = coords * uImageSize1 * 2.0;
+    coords = mul(float4(pixel, 0.0, 1.0), transform).xy / (uImageSize1 * 2.0);
+    
+    float2 pixCoord = coords - coords % (1.0 / uImageSize1) + float2(1.0 / uImageSize1);
+    
+    float4 mapSample = tex2D(samplerTex, coords * 2.0);
+    float swirl = sin((mapSample.g + uTime * 0.3) * 6.28);
+    
+    float4 light = GetRainbow(coords);
+	
+    float2 underCoord = coords * 2.0 + (swirl) * 0.005 * tex2D(uImage0, coords).a;
+    float2 pixUnderCoord = underCoord - underCoord % (2.0 / uImageSize1);
+    
+    float4 distortLight = GetRainbow(pixUnderCoord);
+    float shapeMask = tex2D(uImage0, coords).a;
+    
+    float lum = ((light.r + light.g + light.b) / 3.0);
+    
+    float caustics = tex2D(samplerTex, pixUnderCoord).r;
+    caustics = max(0.0, caustics - 0.1);
+    float speculars = tex2D(uImage0, pixCoord).g * 0.4 * (caustics + pow(caustics, 3.0) * 1.2 * lum);
+    speculars += tex2D(uImage0, coords).r * (0.5 + light * 0.5);
+	
+    float bright = pow(speculars, 6.0) * 200.0 * pow(lum, 2.0);
+    float4 color = distortLight * (pow(speculars, 2.0) * 3.0 + bright);
+    color.a = shapeMask;
+    
+    float2 originalUnderCoord = originalCoords * 2.0 + (swirl) * 0.005 * tex2D(uImage0, coords).a * (1.0 - mapSample.b);
+    float4 underColor = tex2D(gameTex, originalUnderCoord);
+    underColor += shapeMask * distortLight * distortLight * (1.0 - abs(swirl));
 
-    float map = tex2D(samplerTex2, st * 2 + off).r;
-    float4 color = tex2D(samplerTex, st + off);
-
-    float progress = (st.x + st.y) * 10.0;
-
-    float r = 40.0 * (1.0 + sin(time + progress * 0.2));
-    float g = 46.0 * (1.0 + sin(HALF_PI + time + progress));
-    float b = 72.0;
-
-    float3 colorB = float3(r, g, b);
-    float3 color2 = colorB * 0.015 * map * (color.r + color.b * 4.0);
-
-    return float4(color2, color.a) * 0.5;
+    return underColor + color;
 }
 
 technique Technique1

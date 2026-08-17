@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -195,7 +196,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class MainForgeItem : QuickTileItem
+	class MainForgeItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 

@@ -140,12 +140,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			// Neurysms
-			if (Timer > 280 && Timer <= 440)
+			if (Timer > 250 && Timer <= 440)
 			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
 					float lerp = k / (neurisms.Count - 1f);
 					float rot = 6.28f * lerp;
+
+					if (Timer == 250 + k * 5)
+					{
+						SpawnNeurismManifest(thinker.Center + Vector2.UnitX.RotatedBy(rot) * 200);
+					}
 
 					if (Timer == 280 + k * 5)
 					{
@@ -218,16 +223,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				for (int k = 0; k < 120; k++)
 				{
-					Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.Blood);
+					Dust.NewDust(Weakpoint.position, Weakpoint.width, Weakpoint.height, DustID.Blood);
 
 					if (Main.rand.NextBool(3))
-						Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.FireworksRGB, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 0, new Color(1f, 0.5f, 0.6f));
+						Dust.NewDust(Weakpoint.position, Weakpoint.width, Weakpoint.height, DustID.FireworksRGB, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 0, new Color(1f, 0.5f, 0.6f));
 				}
 
-				Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 1f, -0.25f, weakpoint.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 1f, -0.25f, Weakpoint.Center);
 
-				weakpoint.active = false;
-				weakpoint = null;
+				Weakpoint.active = false;
+				Weakpoint = null;
 
 				chainsSplit = true;
 			}

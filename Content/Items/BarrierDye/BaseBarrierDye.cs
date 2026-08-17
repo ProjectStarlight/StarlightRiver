@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public override void PreDrawEffects(SpriteBatch spriteBatch, Player player)
 		{
-			if (!CustomHooks.PlayerTarget.canUseTarget)
+			if (!PlayerTargetSystem.canUseTarget)
 				return;
 
 			BarrierPlayer barrier = player.GetModPlayer<BarrierPlayer>();
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				Vector2 dir = Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * (3.5f + sin * 1f);
 				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
-				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color);
+				spriteBatch.Draw(PlayerTargetSystem.Target, PlayerTargetSystem.getPlayerTargetPosition(player.whoAmI) + dir, PlayerTargetSystem.getPlayerTargetSourceRectangle(player.whoAmI), color);
 			}
 
 			spriteBatch.End();

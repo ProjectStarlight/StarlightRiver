@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Trophies
+﻿using StarlightRiver.Content.Items.BaseTypes;
+
+namespace StarlightRiver.Content.Tiles.Trophies
 {
 	class CeirosTrophy : ModTile
 	{
@@ -10,7 +12,7 @@
 		}
 	}
 
-	class CeirosTrophyItem : QuickTileItem
+	class CeirosTrophyItem : BaseTileItem
 	{
 		public CeirosTrophyItem() : base("Ceiros Trophy", "", "CeirosTrophy", 1, AssetDirectory.TrophyTile) { }
 	}

@@ -360,7 +360,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("CeirosRelicItem").Type));
 		}
 
-		public override void BossLoot(ref string name, ref int potionType)
+		public override void BossLoot(ref int potionType)
 		{
 			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Ceiros);
 			StarlightWorld.Flag(WorldFlags.VitricBossDowned);

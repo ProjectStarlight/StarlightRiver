@@ -3,6 +3,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using System;
 using System.Linq;
 using Terraria;
@@ -261,18 +262,18 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			if (!PlayerTarget.canUseTarget)
+			if (!PlayerTargetSystem.canUseTarget)
 				return false;
 
 			Player owner = Main.player[Projectile.owner];
-			Rectangle source = PlayerTarget.getPlayerTargetSourceRectangle(Projectile.owner);
+			Rectangle source = PlayerTargetSystem.getPlayerTargetSourceRectangle(Projectile.owner);
 
 			float alpha = Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f * 0.5f : 0.5f;
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
 
-			Main.spriteBatch.Draw(PlayerTarget.Target, Main.ReverseGravitySupport(Projectile.Center - Main.screenPosition, -Projectile.height), source, Color.White * alpha, owner.fullRotation, source.Size() / 2f + new Vector2(-owner.width, owner.height) / 2f, 1, SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.Draw(PlayerTargetSystem.Target, Main.ReverseGravitySupport(Projectile.Center - Main.screenPosition, -Projectile.height), source, Color.White * alpha, owner.fullRotation, source.Size() / 2f + new Vector2(-owner.width, owner.height) / 2f, 1, SpriteEffects.FlipHorizontally, 0);
 
 			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 			var origin = new Vector2(0, tex.Height / 2);

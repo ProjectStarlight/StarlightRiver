@@ -17,4 +17,3 @@
 - Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
 - Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
 - Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura
-||
