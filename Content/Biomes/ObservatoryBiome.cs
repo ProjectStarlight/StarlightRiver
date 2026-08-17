@@ -182,6 +182,10 @@ namespace StarlightRiver.Content.Biomes
 		public override void NetSend(BinaryWriter writer)
 		{
 			writer.Write(observatoryOpen);
+			writer.Write(observatoryRoom.X);
+			writer.Write(observatoryRoom.Y);
+			writer.Write(observatoryRoom.Width);
+			writer.Write(observatoryRoom.Height);
 		}
 
 		public override void NetReceive(BinaryReader reader)
@@ -190,6 +194,11 @@ namespace StarlightRiver.Content.Biomes
 
 			if (observatoryOpen)
 				pylonAppearsOn = true;
+
+			observatoryRoom.X = reader.ReadInt32();
+			observatoryRoom.Y = reader.ReadInt32();
+			observatoryRoom.Width = reader.ReadInt32();
+			observatoryRoom.Height = reader.ReadInt32();
 		}
 	}
 }
