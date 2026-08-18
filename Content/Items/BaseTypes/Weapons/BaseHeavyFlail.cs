@@ -37,6 +37,8 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 		readonly List<Vector2> chainPos = [];
 		readonly List<Vector2> chainTarget = [];
 
+		protected int impactCooldown = 0;
+
 		protected bool slowing;
 
 		/// <summary>
@@ -75,6 +77,9 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 		public override void AI()
 		{
 			//Owner.itemAnimation = 10;
+
+			if (impactCooldown > 0)
+				impactCooldown --;
 
 			if (Owner.channel)
 			{
@@ -161,6 +166,9 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 			}
 			else if (State == 4) // Retract
 			{
+				//if (Timer < 10f)
+				//	Timer += 0.01f * chainPos.Count;
+
 				Projectile.Center = chainPos.Count > 0 ? chainPos[^1] : Owner.Center;
 
 				for (int k = 0; k < chainPos.Count; k++)
@@ -199,7 +207,12 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 		{
 			if (State == 0)
 			{
-				OnImpact(true);
+				if (impactCooldown <= 0)
+				{
+					OnImpact(true);
+					impactCooldown = 15;
+				}
+
 				Projectile.velocity *= 0;
 				Length = Vector2.Distance(Owner.Center, Projectile.Center);
 				State = 1;
@@ -207,7 +220,13 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 			else if (State == 2 || State == 3)
 			{
 				if (oldVelocity.Length() >= 2)
-					OnImpact(true);
+				{
+					if (impactCooldown <= 0)
+					{
+						OnImpact(true);
+						impactCooldown = 15;
+					}
+				}
 
 				SwitchSides();
 			}
@@ -249,7 +268,13 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 			ball.Inflate(30, 30);
 
 			if (ball.Intersects(target.Hitbox))
-				OnImpact(false);
+			{
+				if (impactCooldown <= 0)
+				{
+					OnImpact(false);
+					impactCooldown = 15;
+				}
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)

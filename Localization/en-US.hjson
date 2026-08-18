@@ -3887,6 +3887,16 @@ Mods: {
 					If hit by an enemy or projectile, Thinky Jr will target the nearest enemy and explode violently
 					'''
 			}
+
+			HeavyThoughts: {
+				DisplayName: Heavy Thoughts
+				Tooltip:
+					'''
+					Hold to swing a mass of genius
+					Creates psychic seekers upon impact
+					These seekers deal no damage, but inflict {{BUFF:Neurosis}} and {{BUFF:Psychosis}}
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -4253,6 +4263,7 @@ Mods: {
 			SpawnEgg.DisplayName: Spawn Egg
 			ThoughtProvokerExplosion.DisplayName: Greymatter Explosion
 			ThoughtProvokerProjectile.DisplayName: Thinky Junior
+			HeavyThoughtsSeeker.DisplayName: Seeker
 		}
 
 		Biomes: {
