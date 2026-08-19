@@ -65,6 +65,28 @@ namespace StarlightRiver.Compat.BossChecklist
 						["customPortrait"] = CeirosPortrait.DrawCeirosPortrait,
 						["collectibles"] = vitricBossCollection
 					});
+
+				//Thinker
+				var theThinkerCollection = new List<int>()
+				{
+					ModContent.ItemType<Content.Tiles.Trophies.ThinkerTrophyItem>()
+				};
+
+				bcl.Call(
+					"LogBoss",
+					StarlightRiver.Instance,
+					"TheThinker",
+					5.9f,
+					() => StarlightWorld.HasFlag(WorldFlags.ThinkerBossDowned),
+					ModContent.NPCType<Content.Bosses.TheThinkerBoss.TheThinker>(),
+					new Dictionary<string, object>()
+					{
+						["spawnInfo"] = LocalizationRoundabout.DefaultText("Compat.BossChecklist.TheThinker.SpawnInfo", "Throw a Bear Poker at the thinker's cocoon in the crimson caverns."),
+						["despawnMessage"] = LocalizationRoundabout.DefaultText("Compat.BossChecklist.TheThinker.Despawn", "The thinker returns to it's cocoon."),
+						["spawnItems"] = ModContent.ItemType<Content.Items.Crimson.BearPoker>(),
+						["customPortrait"] = ThinkerPortrait.DrawPortrait,
+						["collectibles"] = theThinkerCollection
+					});
 			}
 #pragma warning restore CS8974 // Converting method group to non-delegate type
 		}
