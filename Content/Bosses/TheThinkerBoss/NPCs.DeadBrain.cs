@@ -831,12 +831,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 			}
 
-			if (Phase == Phases.FirstPhase && AttackState == 2)
-				DrawRamGraphics(spriteBatch);
-
-			if (Phase == Phases.SecondPhase && AttackState == 4)
-				DrawHuntGraphics(spriteBatch);
-
 			if (opacity >= 1)
 			{
 				DrawBrainSegments(spriteBatch, NPC, NPC.Center - Main.screenPosition, drawColor, NPC.rotation, NPC.scale, opacity, lastPos);

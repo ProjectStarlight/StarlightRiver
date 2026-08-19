@@ -274,12 +274,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				Color col2 = glowColor * glowPower * opacity;
 				col2.A = 0;
 
-				if (State == 0)
-				{
-					//spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, col2, NPC.rotation, glow.Size() / 2f, 1f, 0, 0);
-					//spriteBatch.Draw(glow2, NPC.Center - Main.screenPosition, null, col2 * 2.5f, NPC.rotation, glow2.Size() / 2f, 1.1f, 0, 0);
-				}
-				else
+				if (State != 0)
 				{
 					for (int k = 0; k < 6; k++)
 					{
@@ -297,17 +292,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				Texture2D tell = Assets.GlowTrailNoEnd.Value;
 				var source = new Rectangle(0, 0, tell.Width, tell.Height);
-				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)tellLen, 64);
+				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)tellLen, 32);
 				var origin = new Vector2(0, tell.Height / 2f);
 				float opacity = (float)Math.Sin(TellTime / 60f * 3.14f) * 0.5f;
-				Color color = new Color(160, 60, 60) * opacity * 0.2f;
+				Color color = new Color(90, 90, 90) * opacity * 0.35f;
 				color.A = 0;
 
 				spriteBatch.Draw(tell, target, source, color, tellDirection + 3.14f, origin, 0, 0);
 
 				for (int k = 0; k < tellLen; k += 48)
 				{
-					Texture2D trail = Assets.Bosses.SquidBoss.SqueezeTellArrow.Value;
+					Texture2D trail = Assets.Bosses.TheThinkerBoss.TellArrow.Value;
 					Vector2 pos = Vector2.Lerp(tellStart, tellStart + Vector2.UnitX.RotatedBy(tellDirection + 3.14f) * tellLen, k / tellLen) - Main.screenPosition;
 
 					float progTell = 1f - k / tellLen;
@@ -319,7 +314,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					if (TellTime > minTell && TellTime < maxTell)
 						thisOpacity += 0.25f * MathF.Sin((TellTime - minTell) / 30f * 3.14f);
 
-					spriteBatch.Draw(trail, pos, null, new Color(255, 180, 80, 0) * opacity * thisOpacity, tellDirection + 3.14f, trail.Size() / 2f, thisOpacity * 2, 0, 0);
+					spriteBatch.Draw(trail, pos, null, new Color(190, 190, 190, 0) * opacity * thisOpacity, tellDirection + 3.14f, trail.Size() / 2f, thisOpacity * 2, 0, 0);
 				}
 			}
 
