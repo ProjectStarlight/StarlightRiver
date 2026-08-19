@@ -300,6 +300,20 @@ namespace StarlightRiver.Content.Biomes
 				GraymatterBiome.forceTimer--;
 
 			GraymatterBiome.forceGrayMatter = false;
+
+			if (Main.time == 0 && !Main.dayTime)
+			{
+				bool canRespawn = true;
+
+				foreach(var point in thinkerPositions)
+				{
+					if (Main.player.Any(n => n.active && Vector2.Distance(n.Center, point * 16) <= 256))
+						canRespawn = false;
+				}
+
+				if (canRespawn)
+					SpawnThinkers();			
+			}
 		}
 
 		public static void SpawnThinkers()
@@ -314,12 +328,12 @@ namespace StarlightRiver.Content.Biomes
 		public override void LoadWorldData(TagCompound tag)
 		{
 			thinkerPositions = tag.GetList<Vector2>("ThinkerPositions") as List<Vector2>;
+		}
 
-			foreach (Vector2 pos in thinkerPositions)
-			{
-				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos * 16) < 100))
-					NPC.NewNPC(null, (int)pos.X * 16, (int)pos.Y * 16, ModContent.NPCType<TheThinker>());
-			}
+		public override void PostWorldLoad()
+		{
+			if (StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+				SpawnThinkers();
 		}
 	}
 
