@@ -378,28 +378,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
-		public void DrawRamGraphics(SpriteBatch spriteBatch)
-		{
-			float chargeTime = Main.masterMode ? 60f : Main.expertMode ? 75f : 90f;
-
-			if (AttackTimer > 130 && AttackTimer < 160)
-			{
-				float rot = NPC.Center.DirectionTo(savedPos).ToRotation();
-				Texture2D tellTex = Assets.Misc.DirectionalBeam.Value;
-				var pos = Vector2.Lerp(NPC.Center, savedPos, 0.2f);
-				var target = new Rectangle((int)pos.X, (int)pos.Y, 900, 50);
-				target.Offset((-Main.screenPosition).ToPoint());
-
-				spriteBatch.Draw(tellTex, target, null, new Color(160, 30, 30, 0) * (float)Math.Sin((AttackTimer - 140) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
-
-				target = new Rectangle((int)pos.X, (int)pos.Y, 900, 250);
-				target.Offset((-Main.screenPosition).ToPoint());
-
-				spriteBatch.Draw(tellTex, target, null, new Color(60, 10, 10, 0) * (float)Math.Sin((AttackTimer - 140) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
-
-			}
-		}
-
 		public void Spawn()
 		{
 			Vector2 relativePos = Main.player[NPC.target].Center - thinker.Center;
@@ -1123,27 +1101,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				contactDamage = false;
 				AttackTimer = 0;
-			}
-		}
-
-		public void DrawHuntGraphics(SpriteBatch spriteBatch)
-		{
-			float motionTime = AttackTimer % 150;
-
-			if (motionTime > 50 && motionTime < 80)
-			{
-				float rot = NPC.Center.DirectionTo(savedPos2).ToRotation();
-				Texture2D tellTex = Assets.Misc.DirectionalBeam.Value;
-				var pos = Vector2.Lerp(NPC.Center, savedPos2, 0.2f);
-				var target = new Rectangle((int)pos.X, (int)pos.Y, 900, 50);
-				target.Offset((-Main.screenPosition).ToPoint());
-
-				spriteBatch.Draw(tellTex, target, null, new Color(160, 30, 30, 0) * (float)Math.Sin((motionTime - 50) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
-
-				target = new Rectangle((int)pos.X, (int)pos.Y, 900, 250);
-				target.Offset((-Main.screenPosition).ToPoint());
-
-				spriteBatch.Draw(tellTex, target, null, new Color(60, 10, 10, 0) * (float)Math.Sin((motionTime - 50) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
 			}
 		}
 
