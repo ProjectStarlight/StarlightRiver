@@ -1,10 +1,13 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class HermesVow : CursedAccessory
 	{
+		public Vector2 lastFXSpeed;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void Load()
@@ -34,9 +37,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				player.accRunSpeed += 3.5f;
-				player.moveSpeed += 0.3f;
-				player.maxRunSpeed += 0.75f;
+				player.moveSpeed += 1.6f;
+				player.maxRunSpeed += 4f;
+				player.runAcceleration *= 12f;
 			}
 		}
 
@@ -72,6 +75,23 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			player.jumpSpeedBoost += 2f;
 			player.extraFall += 10;
+
+			if (player.velocity.Length() > 5 && Main.rand.NextBool(4))
+			{
+				Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(24, 32), ModContent.DustType<Dusts.PixelatedEmber>(), player.velocity * Main.rand.NextFloat(-1f, -0.2f), 0, new Color(200, 50, 255, 0), 0.08f);
+			}
+
+			if ((lastFXSpeed.X == 0 && player.velocity.X != 0) || (lastFXSpeed.X > 0 != player.velocity.X > 0 && player.velocity.X != 0))
+			{
+				for (int k = 0; k < 10; k++)
+				{
+					Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(24, 32), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), new Vector2(player.velocity.X * -30, 0), 0, new Color(200, 50, 255, 0), 0.1f);
+				}
+
+				Helpers.SoundHelper.PlayPitched("Magic/Shadow2", 0.3f, 1f + Main.rand.NextFloat(0.1f), player.Center);
+			}
+
+			lastFXSpeed = player.velocity;
 		}
 
 		public override void AddRecipes()

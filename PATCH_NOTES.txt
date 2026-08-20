@@ -36,6 +36,7 @@
 - Fixed a handful of rendering issues related to gravitation potions
 - Fixed walls in no-building zones being able to be exploded
 - Fixed tainted greataxe being able to target invalid targets
+- Fixed lights bane attempting to create projectiles with the mantis technique
 
 ## Misc
 - Heavy flail type weapons now have a 0.25 second internal cooldown for on-hit effects
