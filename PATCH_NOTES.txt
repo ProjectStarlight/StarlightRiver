@@ -41,3 +41,7 @@
 ## Misc
 - Heavy flail type weapons now have a 0.25 second internal cooldown for on-hit effects
 
+## Balance
+- Hermes vow now gives much better speed and acceleration bonuses
+- Causal mirror now caps regeneration to 20 life per second
+
