@@ -46,6 +46,7 @@ namespace StarlightRiver.Content.Abilities
 		public virtual void UpdateActiveEffects() { }
 		public virtual void DrawActiveEffects(SpriteBatch spriteBatch) { }
 		public virtual void UpdateFixed() { }
+		public virtual void PostPlayerActiveUpdate() { }
 
 		public virtual void OnActivate() { }
 		public virtual void OnDeactivate() { }

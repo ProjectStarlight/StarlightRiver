@@ -402,6 +402,12 @@ namespace StarlightRiver.Content.Abilities
 			}
 		}
 
+		public override void PostUpdate()
+		{
+			if (ActiveAbility != null)
+				activeAbility.PostPlayerActiveUpdate();
+		}
+
 		/// <summary>
 		/// Handles updating the player's stamina values based on their regeneration stat
 		/// </summary>
