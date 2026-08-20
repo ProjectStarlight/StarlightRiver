@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Causal Mirror");
-			Tooltip.SetDefault("Your DoT and regeneration effects are inverted.\nRegenerate life when you would take damage-over-time.\nTake damage-over-time when you would regenerate life.\nThis includes natural regeneration!");
+			Tooltip.SetDefault("Damaging debuffs and regeneration effects are inverted.\nRegenerate life up to 20/s when you would take damage-over-time.\nTake damage-over-time when you would regenerate life.\nThis includes natural regeneration!");
 		}
 
 		public override void SafeSetDefaults()
@@ -62,6 +62,12 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				regen *= -1f;
 				Player.lifeRegen *= -1;
+
+				if (Player.lifeRegen > 20)
+					Player.lifeRegen = 20;
+
+				if (Player.lifeRegen > 0 && Main.GameUpdateCount % 60 == 0)
+					CombatText.NewText(Player.Hitbox, new Color(150, 90, 255), Player.lifeRegen);
 			}
 		}
 
