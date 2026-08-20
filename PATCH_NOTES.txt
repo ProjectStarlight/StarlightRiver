@@ -6,10 +6,17 @@
 
 ## Content
 - The player can now seek out 3 special starlight vessel shards to increase their maximum starlight
+
 - The following are spoilers for the crimson biome
 ||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
 - Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
+- Added the revenant, a new crimson enemy which will revive itself untill you destroy it's core
+- Added the thought police, a new crimson enemy which patrol the crimson for hallucinating players
+- Added grossquitoes, a new crimson enemy which will explode when you approach them
+- Added neuron chompers, a new crimson enemy which hangs from trees to hunt players
+- Added the heavy thoughts, which allows you to swing the mass of a genuis
 ||
+
 - The following are spoilers for The Thinker
 ||- Added the bear poker, which can be used to spawn The Thinker
 - Added the lobotolizer, a spear which can throw a hallucinatory copy of itself to engage a more offensive attack mode
@@ -17,3 +24,18 @@
 - Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
 - Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
 - Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura
+- Added the thought provoker, which allows you to summon Thinky Jr. to protect you
+||
+
+## Fixes
+- Fixed an issue where the world data for Alican's observatory would not be properly synced in multiplayer
+- Fixed an issue where vitric ore would try to use invalid framing when broken
+- Fixed a number of actor NPCs not having debuff immunities
+- Fixed an issue where the moonstone armor tooltip overwrote other expanded tooltips
+- Fixed an issue where aurora water would not render correctly with waves disabled in settings
+- Fixed a handful of rendering issues related to gravitation potions
+- Fixed walls in no-building zones being able to be exploded
+
+## Misc
+- Heavy flail type weapons now have a 0.25 second internal cooldown for on-hit effects
+

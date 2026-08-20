@@ -7,6 +7,7 @@ using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.NPCs.Starlight;
+using StarlightRiver.Content.Prefixes.Accessory.Relic;
 using StarlightRiver.Content.Tiles.BaseTypes;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Content.Tiles.Misc;
@@ -85,7 +86,16 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			player.GetHandler().unlockedAbilities.Clear();
+			foreach (Item item in player.inventory)
+			{
+				if (item.accessory)
+				{
+					item.prefix = ModContent.PrefixType<Perfected>();
+					item.GetGlobalItem<RelicItem>().isRelic = true;
+				}
+			}
+
+			//player.GetHandler().unlockedAbilities.Clear();
 			return true;
 
 			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);

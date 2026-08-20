@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				if (info.Crit && !greatAxe.Embedding)
 				{
 					//if there is an enemy close to the target that was just critted, the greataxe will go into them
-					NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+					NPC npc = Main.npc.Where(n => n.active && n.CanBeChasedBy(player) && n != target && target.Distance(n.Center) < 400f)
 						.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
 
 					if (npc != default)
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				if (info.Crit && !greatAxe.Embedding)
 				{
 					//if there is an enemy close to the target that was just critted, the greataxe will go into them
-					NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+					NPC npc = Main.npc.Where(n => n.active && n.CanBeChasedBy(player) && n != target && target.Distance(n.Center) < 400f)
 						.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
 
 					if (npc != default)
