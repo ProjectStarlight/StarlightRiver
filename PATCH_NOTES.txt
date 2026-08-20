@@ -35,6 +35,7 @@
 - Fixed an issue where aurora water would not render correctly with waves disabled in settings
 - Fixed a handful of rendering issues related to gravitation potions
 - Fixed walls in no-building zones being able to be exploded
+- Fixed tainted greataxe being able to target invalid targets
 
 ## Misc
 - Heavy flail type weapons now have a 0.25 second internal cooldown for on-hit effects

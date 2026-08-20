@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public int comboState;
 
 		private static List<int> blackListedSwords;
+		public static List<int> projectileBlacklist;
 
 		public SwordBook() : base("Mantis Technique", "Teaches you the Art of the Sword, granting all sword weapons a new combo attack\n<right> to parry, reflecting projectiles") { }
 
@@ -41,6 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			base.SetStaticDefaults();
 			blackListedSwords = new() { ModContent.ItemType<Moonstone.Moonfury>() };
+			projectileBlacklist = new() { ItemID.LightsBane };
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SpearBook>();
 		}
@@ -217,7 +219,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Owner.ItemCheck_EmitUseVisuals(itemSnapshot, itemRect);
 			}
 
-			if (ComboState < 3 && Progress == 0 && itemSnapshot.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //spawn projectile if relevant
+			if (!SwordBook.projectileBlacklist.Contains(itemSnapshot.type) && ComboState < 3 && Progress == 0 && itemSnapshot.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //spawn projectile if relevant
 				Projectile.NewProjectile(null, Owner.Center, Vector2.Normalize(Main.MouseWorld - Owner.Center) * itemSnapshot.shootSpeed, itemSnapshot.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
 
 			switch (ComboState)
@@ -264,7 +266,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
-					if (itemSnapshot.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //create projectile ring on circular slash
+					if (!SwordBook.projectileBlacklist.Contains(itemSnapshot.type) && itemSnapshot.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //create projectile ring on circular slash
 					{
 						for (int k = 0; k < 12; k++)
 						{
