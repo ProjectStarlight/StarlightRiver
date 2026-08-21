@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45, Player.Center);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item104, Player.Center);
-			EffectTimer = 65;
+			EffectTimer = 55;
 			flowTimer = 0;
 			maxTrail = 0;
 		}
@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 						float alpha = trueFactor < 0.8 ? trueFactor / 0.8f : 1f - (trueFactor - 0.8f) / 0.2f;
 
-						return new Color(100, 120 + (int)(105 * trueFactor), 255 - (int)(50 * trueFactor)) * 0.75f * alpha * (float)Math.Sin(EffectTimer / 65f * 3.14f);
+						return new Color(100, 120 + (int)(105 * trueFactor), 255 - (int)(50 * trueFactor)) * 0.75f * alpha * (float)Math.Sin(EffectTimer / 55f * 3.14f);
 					});
 			}
 

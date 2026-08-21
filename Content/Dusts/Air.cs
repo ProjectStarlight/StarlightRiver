@@ -187,15 +187,15 @@ namespace StarlightRiver.Content.Dusts
 		public override bool Update(Dust dust)
 		{
 			dust.fadeIn -= 3;
-			dust.scale = (2f - Math.Abs(dust.fadeIn) / 30f) * 0.15f;
+			dust.scale = (2f - Math.Abs(dust.fadeIn) / 25f) * 0.15f;
 
-			dust.alpha = 150 - (int)(Math.Abs(dust.fadeIn) / 120f * 150);
+			dust.alpha = 170 - (int)(Math.Abs(dust.fadeIn) / 80f * 170);
 			dust.position += dust.velocity;
 			dust.velocity *= 0.9f;
 
 			dust.color = dust.fadeIn <= 0 ? new Color(100 + (int)(dust.fadeIn / 2), 220 + (int)(dust.fadeIn / 2), 255) * (dust.alpha / 255f) : Color.Transparent;
 
-			if (dust.fadeIn <= -120)
+			if (dust.fadeIn <= -80)
 				dust.active = false;
 			return false;
 		}
