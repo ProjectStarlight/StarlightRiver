@@ -1,4 +1,5 @@
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 
 namespace StarlightRiver.Content.Dusts
@@ -90,6 +91,11 @@ namespace StarlightRiver.Content.Dusts
 
 			return false;
 		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			return true;
+		}
 	}
 
 	public class AirGravity : ModDust
@@ -171,10 +177,6 @@ namespace StarlightRiver.Content.Dusts
 			dust.noGravity = true;
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 64, 64);
-			dust.position -= Vector2.One * 32;
-
-			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -184,23 +186,31 @@ namespace StarlightRiver.Content.Dusts
 
 		public override bool Update(Dust dust)
 		{
-			dust.scale = (2f - Math.Abs(dust.fadeIn) / 30f) * 0.15f;
-			Vector2 currentCenter = dust.position + Vector2.One * 32 * dust.scale;
 			dust.fadeIn -= 3;
-			dust.scale = (2f - Math.Abs(dust.fadeIn) / 30f) * 0.15f;
-			Vector2 nextCenter = dust.position + Vector2.One * 32 * dust.scale;
+			dust.scale = (2f - Math.Abs(dust.fadeIn) / 25f) * 0.15f;
 
-			dust.position += currentCenter - nextCenter;
-
-			dust.alpha = 150 - (int)(Math.Abs(dust.fadeIn) / 60f * 150);
+			dust.alpha = 170 - (int)(Math.Abs(dust.fadeIn) / 80f * 170);
 			dust.position += dust.velocity;
 			dust.velocity *= 0.9f;
 
-			dust.color = dust.fadeIn <= 0 ? new Color(100, 220, 255) * (dust.alpha / 255f) : Color.Transparent;
-			dust.shader?.UseColor(dust.color);
+			dust.color = dust.fadeIn <= 0 ? new Color(100 + (int)(dust.fadeIn / 2), 220 + (int)(dust.fadeIn / 2), 255) * (dust.alpha / 255f) : Color.Transparent;
 
-			if (dust.fadeIn <= -60)
+			if (dust.fadeIn <= -80)
 				dust.active = false;
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
+
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
+			{
+				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale * lerper, 0f, 0f);
+			});
+
 			return false;
 		}
 	}
