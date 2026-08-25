@@ -47,7 +47,7 @@ namespace StarlightRiver.Core
 						{
 							WorldGen.PlaceTile(k, y - 1, ModContent.TileType<BigSpike>());
 
-							k += 5;
+							k += 10;
 							y = 10;
 							continue;
 						}
