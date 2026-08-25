@@ -40,14 +40,16 @@ namespace StarlightRiver.Core
 
 							k += 6;
 							y = 10;
+							continue;
 						}
 
-						if (WorldGen.genRand.NextBool(12))
+						if (WorldGen.genRand.NextBool(4))
 						{
 							WorldGen.PlaceTile(k, y - 1, ModContent.TileType<BigSpike>());
 
 							k += 5;
 							y = 10;
+							continue;
 						}
 
 						if (noise.GetNoise(k * 2, 0.5f) > 0f)
@@ -57,6 +59,7 @@ namespace StarlightRiver.Core
 
 							k += 1;
 							y = 10;
+							continue;
 						}
 					}
 				}

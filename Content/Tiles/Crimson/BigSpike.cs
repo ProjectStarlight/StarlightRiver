@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			Tile tile = Framing.GetTileSafely(i, j);
 			float angle = final.ToRotation();
 
-			if (float.IsNaN(angle) || count <= 0)
+			if (!WorldGen.generatingWorld && (float.IsNaN(angle) || count <= 0))
 			{
 				WorldGen.KillTile(i, j);
 				return false;
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			tile.TileFrameX = (short)(angle % 6.28f * 100);
 
-			//if (WorldGen.generatingWorld)
+			if (WorldGen.generatingWorld)
 				tile.TileFrameY = (short)Main.rand.Next(4);
 
 			return false;
