@@ -1,5 +1,6 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Core.Loaders.TileLoading;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -128,7 +129,7 @@ namespace StarlightRiver.Content.Tiles.Relics
 				}
 
 				if (Main.rand.NextBool(6))
-					Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + 1) * 16, ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.Next(-2, 0), 0, new Color(50, Main.rand.Next(100, 200), 255) * 0.5f, Main.rand.NextFloat(0.5f, 0.8f));
+					Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + 1) * 16, ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.UnitY * Main.rand.Next(-2, 0), 0, new Color(50, Main.rand.Next(100, 200), 255, 0) * 0.5f, Main.rand.NextFloat(0.1f, 0.2f));
 			}
 		}
 
@@ -146,16 +147,11 @@ namespace StarlightRiver.Content.Tiles.Relics
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 		{
 			if (drawData.tileFrameX % FrameWidth == 0 && drawData.tileFrameY % FrameHeight == 0)
-				Main.instance.TilesRenderer.AddSpecialLegacyPoint(i, j);
+				Main.instance.TilesRenderer.AddSpecialPoint(i, j, Terraria.GameContent.Drawing.TileDrawing.TileCounterType.CustomNonSolid);
 		}
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			var offScreen = new Vector2(Main.offScreenRange);
-
-			if (Main.drawToScreen)
-				offScreen = Vector2.Zero;
-
 			var p = new Point(i, j);
 			Tile tile = Main.tile[p.X, p.Y];
 
@@ -179,21 +175,21 @@ namespace StarlightRiver.Content.Tiles.Relics
 			// Some math magic to make it smoothly move up and down over time
 			const float TwoPi = (float)Math.PI * 2f;
 			float offset = (float)Math.Sin(Main.GlobalTimeWrappedHourly * TwoPi / 5f);
-			Vector2 drawPos = worldPos + offScreen - Main.screenPosition + new Vector2(0f, -40f) + new Vector2(0f, offset * 4f);
+			Vector2 drawPos = worldPos - Main.screenPosition + new Vector2(0f, -40f) + new Vector2(0f, offset * 4f);
 
 			// background glow
 			Texture2D tex = Assets.StarTexture.Value;
 			float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
 			float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 2f);
 
-			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 0, tex.Size() / 2f, 0.25f + sin * 0.1f, 0, 0);
-			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.15f + sin2 * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 0, tex.Size() / 2f, 0.15f + sin * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.05f + sin2 * 0.1f, 0, 0);
 
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 230, 255, 0), 0, tex.Size() / 2f, 0.45f + sin * 0.1f, 0, 0);
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 160, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.35f + sin2 * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 230, 255, 0), 0, tex.Size() / 2f, 0.35f + sin * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 160, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.25f + sin2 * 0.1f, 0, 0);
 
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 10, 60, 0), 0, tex.Size() / 2f, 0.55f + sin * 0.1f, 0, 0);
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 0, 60, 0), 1.57f / 2f, tex.Size() / 2f, 0.45f + sin2 * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 10, 60, 0), 0, tex.Size() / 2f, 0.45f + sin * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 0, 60, 0), 1.57f / 2f, tex.Size() / 2f, 0.35f + sin2 * 0.1f, 0, 0);
 
 			// Draw the main texture
 			spriteBatch.Draw(texture, drawPos, frame, color, 0f, origin, 1f, effects, 0f);

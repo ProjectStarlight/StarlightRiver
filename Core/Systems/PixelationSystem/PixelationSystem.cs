@@ -240,6 +240,6 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 		UnderProjectiles = 3,
 		OverPlayers = 4,
 		OverWiresUI = 5,
-		Dusts = 6,
+		Dusts = 6
 	}
 }
