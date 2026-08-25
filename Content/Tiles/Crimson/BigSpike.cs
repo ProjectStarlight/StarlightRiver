@@ -15,11 +15,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void SetStaticDefaults()
 		{
-			TileObjectData.newTile.AnchorBottom = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
-			TileObjectData.newTile.AnchorLeft = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
-			TileObjectData.newTile.AnchorRight = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
-			TileObjectData.newTile.AnchorTop = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
-
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Bone, SoundID.NPCHit1, new Color(60, 40, 20));
 		}
 

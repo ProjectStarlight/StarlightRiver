@@ -43,7 +43,7 @@ namespace StarlightRiver.Core
 							continue;
 						}
 
-						if (WorldGen.genRand.NextBool(4))
+						if (WorldGen.genRand.NextBool(12))
 						{
 							WorldGen.PlaceTile(k, y - 1, ModContent.TileType<BigSpike>());
 
