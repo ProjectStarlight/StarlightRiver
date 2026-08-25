@@ -3,7 +3,6 @@ using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -153,7 +152,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			lastRealVel = Player.velocity;
 
-			if (((Player.velocity - goalVel).Length() >= 0.2f || Math.Abs(Player.velocity.ToRotation() - Dir.ToRotation()) > 0.05f) && Time < (maxTime - 1))
+			if (((Player.velocity - goalVel).Length() >= 0.5f || Math.Abs(Player.velocity.ToRotation() - Dir.ToRotation()) > 0.05f) && Time < (maxTime - 1))
 			{
 				SoundEngine.PlaySound(SoundID.Dig, Player.Center);
 
@@ -166,7 +165,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 				for (int k = 0; k < 20; k++)
 				{
-					Dust.NewDustPerfect(Player.Center + Dir * 32, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Dir.RotatedByRandom(0.4f) * -Main.rand.NextFloat(26), 0, new Color(50, 200, 255, 0), 0.1f);
+					Dust.NewDustPerfect(Player.Center + Dir * 32, DustType<Dusts.PixelatedImpactLineDust>(), Dir.RotatedByRandom(0.4f) * -Main.rand.NextFloat(26), 0, new Color(50, 200, 255, 0), 0.1f);
 				}
 			}
 		}
@@ -230,8 +229,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				dus.customData = Player;
 			}
 
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45, Player.Center);
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item25, Player.Center);
+			SoundEngine.PlaySound(SoundID.Item45, Player.Center);
+			SoundEngine.PlaySound(SoundID.Item25, Player.Center);
 		}
 
 		public override void OnExit()
@@ -268,14 +267,16 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			if (trail is null || trail.IsDisposed)
 			{
-				trail = new Trail(Main.instance.GraphicsDevice, 14, new NoTip(), 
-					factor => {
+				trail = new Trail(Main.instance.GraphicsDevice, 14, new NoTip(),
+					factor =>
+					{
 						float trueFactor = StarlightMathHelper.GetEarlyTrailFactor(factor, 14, maxTrail);
 
 						return trueFactor <= 0.8f ? Math.Min(trueFactor * 50, 30) : 30 - (trueFactor - 0.8f) / 0.2f * 10;
-					}, 
-					
-					factor => {
+					},
+
+					factor =>
+					{
 						float trueFactor = StarlightMathHelper.GetEarlyTrailFactor(factor.X, 14, maxTrail);
 
 						if (factor.X == 1)

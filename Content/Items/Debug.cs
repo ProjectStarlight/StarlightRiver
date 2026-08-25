@@ -1,6 +1,9 @@
 using JetBrains.Annotations;
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faewhip;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
@@ -86,6 +89,12 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			player.GetHandler().Unlock<HintAbility>();
+			player.GetHandler().Unlock<Dash>();
+			player.GetHandler().Unlock<Whip>();
+			player.GetHandler().InfusionLimit = 3;
+			return true;
+
 			foreach (Item item in player.inventory)
 			{
 				if (item.accessory)
