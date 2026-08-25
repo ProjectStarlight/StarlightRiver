@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			if (Projectile.velocity.Length() > 0) // Orient on spawn
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 32f, ModContent.ProjectileType<GraySlash>(), Projectile.damage * 2, 1, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 32f, ModContent.ProjectileType<GraySlash>(), Projectile.damage * 3, 1, Projectile.owner);
 
 				Projectile.rotation = Projectile.velocity.ToRotation();
 				oldRot = Projectile.rotation;

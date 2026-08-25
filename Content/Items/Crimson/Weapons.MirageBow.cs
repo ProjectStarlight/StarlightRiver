@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void SetDefaults()
 		{
-			Item.damage = 24;
-			Item.crit = 10;
+			Item.damage = 40;
+			Item.crit = 16;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 32;
 			Item.height = 52;

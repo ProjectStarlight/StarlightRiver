@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Item.DamageType = DamageClass.Melee;
 			Item.damage = 55;
-			Item.crit = 15;
+			Item.crit = 25;
 			Item.useTime = 30;
 			Item.useAnimation = 30;
 			Item.width = 32;

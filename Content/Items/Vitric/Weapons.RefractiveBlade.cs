@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetDefaults()
 		{
-			Item.damage = 34;
+			Item.damage = 40;
 			Item.width = 60;
 			Item.height = 60;
 			Item.useTime = 22;

@@ -79,11 +79,13 @@ namespace StarlightRiver.Content.Items.RatKing
 
 		public override string DisplayName => "Blood Resonance";
 
-		public override string Tooltip => "Decreases innoculation by 3%, deals 5 damage per second regardless of stacks";
+		public override string Tooltip => "Decreases innoculation by 1%, deals 5 damage per second regardless of stacks";
 
 		public override string Texture => AssetDirectory.Buffs + Name;
 
 		public override bool Debuff => true;
+
+		public override int MaxStacks => 100;
 
 		public override BuffStack GenerateDefaultStack(int duration)
 		{
@@ -96,12 +98,12 @@ namespace StarlightRiver.Content.Items.RatKing
 
 		public override void PerStackEffectsNPC(NPC npc, BuffStack stack)
 		{
-			npc.GetGlobalNPC<InoculationNPC>().DoTResist -= 0.03f;
+			npc.GetGlobalNPC<InoculationNPC>().DoTResist -= 0.01f;
 		}
 
 		public override void PerStackEffectsPlayer(Player player, BuffStack stack)
 		{
-			player.GetModPlayer<InoculationPlayer>().DoTResist -= 0.03f;
+			player.GetModPlayer<InoculationPlayer>().DoTResist -= 0.01f;
 		}
 
 		public override void AnyStacksUpdatePlayer(Player player)

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 32;
 			Item.height = 32;
-			Item.damage = 34;
+			Item.damage = 28;
 			Item.crit = 14;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 46;

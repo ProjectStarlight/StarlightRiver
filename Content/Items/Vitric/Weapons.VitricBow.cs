@@ -18,12 +18,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.width = 38;
 			Item.height = 34;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.useAnimation = 28;
-			Item.useTime = 28;
+			Item.useAnimation = 36;
+			Item.useTime = 36;
 			Item.shootSpeed = 8f;
 			Item.shoot = ProjectileID.WoodenArrowFriendly;
 			Item.knockBack = 2f;
-			Item.damage = 25;
+			Item.damage = 17;
 			Item.useAmmo = AmmoID.Arrow;
 			Item.rare = ItemRarityID.Green;
 			Item.UseSound = SoundID.Item5;
@@ -37,12 +37,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			var aim = Vector2.Normalize(Main.MouseWorld - player.Center);
 
-			int proj = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(0.1f), type, damage, knockback, player.whoAmI);
+			int proj = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(0.15f), type, damage, knockback, player.whoAmI);
 			Main.projectile[proj].scale = 0.5f; // Not synced. not sure how we would handle vanilla projectile manipulation sync
 			Main.projectile[proj].damage /= 2; // damage is synced implicitly since it's determined by the client on hit
 			Main.projectile[proj].noDropItem = true;
 
-			int proj2 = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(-0.1f), type, damage, knockback, player.whoAmI);
+			int proj2 = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(-0.15f), type, damage, knockback, player.whoAmI);
 			Main.projectile[proj2].scale = 0.5f;
 			Main.projectile[proj2].damage /= 2;
 			Main.projectile[proj2].noDropItem = true;
