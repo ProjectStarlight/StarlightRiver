@@ -23,6 +23,12 @@ namespace StarlightRiver.Content.Items.Crimson
 			StarlightProjectile.OnHitNPCEvent += SpawnOnCrit;
 		}
 
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Mirage Bow");
+			Tooltip.SetDefault("Critical strikes summon a mirage archer opposite your cursor");
+		}
+
 		public override void SetDefaults()
 		{
 			Item.damage = 40;
