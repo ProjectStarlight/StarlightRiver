@@ -4264,6 +4264,7 @@ Mods: {
 			ThoughtProvokerExplosion.DisplayName: Greymatter Explosion
 			ThoughtProvokerProjectile.DisplayName: Thinky Junior
 			HeavyThoughtsSeeker.DisplayName: Seeker
+			HeavyThoughtsProjectile.DisplayName: Heavy Thoughts Projectile
 		}
 
 		Biomes: {

@@ -462,7 +462,7 @@ namespace StarlightRiver.Content.Items
 
 		public override void Load()
 		{
-			//On_Main.DoDraw += DrawBeta;
+			On_Main.DoDraw += DrawBeta;
 		}
 
 		private void DrawBeta(On_Main.orig_DoDraw orig, Main self, GameTime gameTime)
@@ -473,8 +473,7 @@ namespace StarlightRiver.Content.Items
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER 0.3 ALPHA", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Built at 8/26/26 @ 15:30 EST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"Press T for target views", new Vector2(Main.screenWidth / 2, 86), Color.White, 0.4f, 0.5f);
 			//Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Gravitation potion/globe please", new Vector2(Main.screenWidth / 2, 112), new Color(255, 255, 200), 0.3f, 0.5f);
 
@@ -487,7 +486,7 @@ namespace StarlightRiver.Content.Items
 			Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the national emergency fuck system woo] no way!\n\ngreen is green but [c/22ff22: green is greener!]", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 426), Color.White, 0, default, Vector2.One, out var hovered3, 200);
 			*/
 
-			for (int k = 0; k < Main.screenHeight / 32; k++)
+			/*for (int k = 0; k < Main.screenHeight / 32; k++)
 			{
 				string message = $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT - ";
 
@@ -499,7 +498,7 @@ namespace StarlightRiver.Content.Items
 
 					Main.spriteBatch.DrawString(font, message, new Vector2(x, k * 32), Color.White * 0.3f, 0, Vector2.Zero, 1.5f, 0, 0);
 				}
-			}
+			}*/
 
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.T))
 			{

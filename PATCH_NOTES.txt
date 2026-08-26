@@ -6,6 +6,8 @@
 
 ## Content
 - The player can now seek out 3 special starlight vessel shards to increase their maximum starlight
+- Forbidden winds has been updated to have a nicer visual effect
+- Forbidden winds will now end abruptly with an impact if you hit the ground instead of continuing awkwardly
 
 - The following are spoilers for the crimson biome
 ||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
@@ -37,6 +39,9 @@
 - Fixed walls in no-building zones being able to be exploded
 - Fixed tainted greataxe being able to target invalid targets
 - Fixed lights bane attempting to create projectiles with the mantis technique
+- Fixed an issue where some inanimate objects could be debuffed
+- Fixed an issue where wellspring needed > 2 mana instead of >= 2 mana to activate
+- Fixed an issue where approaching certain areas with screen effects would cause various things to fail to render if waves were disabled in vanilla settings
 
 ## Misc
 - Heavy flail type weapons now have a 0.25 second internal cooldown for on-hit effects
@@ -44,4 +49,5 @@
 ## Balance
 - Hermes vow now gives much better speed and acceleration bonuses
 - Causal mirror now caps regeneration to 20 life per second
+- Blood crystal is now capped at 100 stacks (from unlimited) and provides -1% innoculation per stack (from -3%)
 
