@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Items.Crimson
 {
@@ -39,6 +40,11 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.consumable = true;
 
 			Item.value = Item.sellPrice(copper: 1);
+		}
+
+		public override bool? PrefixChance(int pre, UnifiedRandom rand)
+		{
+			return false;
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

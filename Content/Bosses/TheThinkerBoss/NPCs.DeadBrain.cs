@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -344,8 +345,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Timer++;
 			AttackTimer++;
 
-			if (Phase != Phases.Fleeing && thinker != null && !Main.player.Any(n => n.active && IsInArena(n)))
+			if (Phase > Phases.SpawnAnim && thinker != null && !Main.player.Any(n => n.active && IsInArena(n)))
 			{
+				if (Main.netMode != NetmodeID.Server)
+					CameraSystem.Reset();
+
 				Phase = Phases.Fleeing;
 				Timer = 0;
 			}
@@ -385,6 +389,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				// If the nearest thinker is too far away, flee.
 				if (thinker is null || dist > Math.Pow(2000, 2))
 				{
+					if (Main.netMode != NetmodeID.Server)
+						CameraSystem.Reset();
+
 					Phase = Phases.Fleeing;
 					Timer = 0;
 				}
