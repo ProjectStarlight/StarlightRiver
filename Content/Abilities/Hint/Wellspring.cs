@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public override bool OnHint(Vector2 pos, bool defaultHint)
 		{
 			Tile tile = Framing.GetTileSafely(pos / 16);
-			if (defaultHint && !tile.HasTile && Player.GetHandler().Stamina > 2f)
+			if (defaultHint && !tile.HasTile && Player.GetHandler().Stamina >= 2f)
 			{
 				Player.GetHandler().Stamina -= 1.75f;
 
