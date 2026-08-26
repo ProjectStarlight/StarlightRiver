@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public static ThinkerRecord DeserializeData(TagCompound tag)
 		{
-			return new ThinkerRecord(null, tag.Get<Vector2>("Pos"), tag.GetList<Vector2>("changedTiles").Select(n => n.ToPoint16()).ToList());
+			return new ThinkerRecord(null, tag.Get<Vector2>("Pos"), tag.GetList<Vector2>("Tiles").Select(n => n.ToPoint16()).ToList());
 		}
 	}
 

@@ -12,6 +12,7 @@ using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
@@ -472,7 +473,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override bool? CanBeHitByProjectile(Projectile projectile)
 		{
-			if (Open && !active && projectile.Hitbox.Intersects(NPC.Hitbox) && projectile.ModProjectile is BearPokerProjectile)
+			if (Open && !active && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<DeadBrain>()) && projectile.Hitbox.Intersects(NPC.Hitbox) && projectile.ModProjectile is BearPokerProjectile)
 			{
 				var packet = new SpawnNPC((int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DeadBrain>(), NPC.whoAmI);
 				packet.Send(-1, -1, Main.netMode == NetmodeID.SinglePlayer);
