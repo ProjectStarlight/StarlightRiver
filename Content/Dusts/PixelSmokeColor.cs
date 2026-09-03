@@ -49,24 +49,28 @@ namespace StarlightRiver.Content.Dusts
 
 			Color? fadeColor = null;
 
-			object[] pair = (object[])dust.customData;
+			object[] pair = dust.customData as object[];
 
-			int variant = (int)pair[1];
-
-			if (pair[0] is Color color_)
-				fadeColor = color_;
-
-			Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, Eases.EaseQuinticInOut(1f - lerper));
-
-			if (variant < 1 || variant > 3)
-				return false;
-
-			Texture2D tex = variants[variant - 1].Value;
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
+			if (pair != null)
 			{
-				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
-				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation + MathHelper.PiOver2, tex.Size() / 2f, dust.scale, 0f, 0f);
-			});
+				int variant = (int)pair[1];
+
+				if (pair[0] is Color color_)
+					fadeColor = color_;
+
+
+				Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, Eases.EaseQuinticInOut(1f - lerper));
+
+				if (variant < 1 || variant > 3)
+					return false;
+
+				Texture2D tex = variants[variant - 1].Value;
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
+				{
+					Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+					Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation + MathHelper.PiOver2, tex.Size() / 2f, dust.scale, 0f, 0f);
+				});
+			}
 
 			return false;
 		}
