@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		private void PostHitItems(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Equipped(player))
+			if (Equipped(player) && !target.immortal)
 			{
 				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.35f), 1, damageDone) });
 
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		private void PostHitProjectiles(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Equipped(player))
+			if (Equipped(player) && !target.immortal)
 			{
 				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.35f), 1, damageDone) });
 
