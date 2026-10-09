@@ -21,11 +21,6 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 
 		public Vector2 EndPoint => Projectile.WhipPointsForCollision[segments - 1] + new Vector2(Projectile.width * 0.5f, Projectile.height * 0.5f);
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			return false;
-		}
-
 		public BaseWhip(string name, int segments = 20, float rangeMultiplier = 1f, Color? stringColor = null, int handleOffset = 2)
 		{
 			this.name = name;

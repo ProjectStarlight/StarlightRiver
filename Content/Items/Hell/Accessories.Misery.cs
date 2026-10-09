@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Hell
 {
 	internal class Misery : CursedAccessory
 	{
-		private readonly HashSet<NPC> seenNpcs = new();
+		private readonly HashSet<NPC> seenNpcs = [];
 		private int lastPlayerDefense;
 		private float lastPlayerInnoc;
 
@@ -53,8 +53,7 @@ namespace StarlightRiver.Content.Items.Hell
 			{
 				if (!npc.friendly && Vector2.Distance(npc.Center, Player.Center) <= 300)
 				{
-					if (!seenNpcs.Contains(npc))
-						seenNpcs.Add(npc);
+					seenNpcs.Add(npc);
 
 					npc.defense = lastPlayerDefense;
 					npc.GetGlobalNPC<InoculationNPC>().DoTResist = lastPlayerInnoc;
