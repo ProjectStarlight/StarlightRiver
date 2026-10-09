@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			SoundHelper.PlayPitched("Magic/FireHit", 0.25f, Main.rand.NextFloat(-0.2f, 0.2f), Projectile.Center);
 
-			var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Aurora>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(255, 200, 30));
+			var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.SparkleStar>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(255, 200, 30));
 			d.customData = 1.8f;
 
 			for (int k = 0; k < 40; k++)

@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (tile.LiquidType == LiquidID.Water && tile.LiquidAmount > 0)
 			{
-				var d = Dust.NewDustPerfect(Center + new Vector2(x1, y1) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(150, 255, 255) * 0.3f, 1);
+				var d = Dust.NewDustPerfect(Center + new Vector2(x1, y1) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, new Color(150, 255, 255) * 0.3f, 1);
 				d.customData = Main.rand.NextFloat(0.6f, 0.9f);
 			}
 		}

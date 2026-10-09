@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (Projectile.timeLeft == (int)(25 * speed))
 			{
-				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
+				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<VitricTealSparkleAlternate>(), Vector2.Zero, 0, default, 2);
 				player.velocity += Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
 			}
 		}
@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				modifiers.Knockback *= 3;
 
 				for (int k = 0; k < 20; k++)
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Stamina>(), Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(12), 0, default, 1.5f);
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<OrangeSparkle>(), Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(12), 0, default, 1.5f);
 
 				BuffPower = 0;
 			}

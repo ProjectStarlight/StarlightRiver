@@ -95,8 +95,8 @@ namespace StarlightRiver.Content.NPCs.Actors
 				if ((tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water || tileDown.LiquidAmount > 0 && tileDown.LiquidType == LiquidID.Water) && Main.rand.Next(10) > 3)//surface lights
 				{
 					//smaller dusts that home in on item if it exists (the dusts do the checking)
-					var d = Dust.NewDustPerfect(surfaceLightPos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.Zero, 200, new Color(Main.rand.NextBool(30) ? 200 : 0, Main.rand.Next(150), 255));
-					d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.6f, 0.8f));
+					var d = Dust.NewDustPerfect(surfaceLightPos, ModContent.DustType<Dusts.SparkleStarMagnetized>(), Vector2.Zero, 200, new Color(Main.rand.NextBool(30) ? 200 : 0, Main.rand.Next(150), 255));
+					d.customData = new Dusts.SparkleStarMagnetizedData(this, Main.rand.NextFloat(0.6f, 0.8f));
 
 					//vertical light above water
 					if (Main.rand.NextBool())
@@ -114,8 +114,8 @@ namespace StarlightRiver.Content.NPCs.Actors
 				Tile tile2 = Framing.GetTileSafely(circularLightPos);
 				if (tile2.LiquidAmount > 0 && tile2.LiquidType == LiquidID.Water && Main.rand.NextBool(2))//under water lights
 				{
-					var d = Dust.NewDustPerfect(circularLightPos, DustType<Dusts.AuroraSuction>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
-					d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.4f, 0.5f));
+					var d = Dust.NewDustPerfect(circularLightPos, DustType<Dusts.SparkleStarMagnetized>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
+					d.customData = new Dusts.SparkleStarMagnetizedData(this, Main.rand.NextFloat(0.4f, 0.5f));
 				}
 			}
 
@@ -207,7 +207,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					NPC.netUpdate = true;
 
 					for (int i = 0; i < 40; i++)
-						Dust.NewDustPerfect(targetItem.Center, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
+						Dust.NewDustPerfect(targetItem.Center, DustType<Dusts.BlueSparkle>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
 
 					//for (int k = 0; k < Main.maxPlayers; k++)//unknown use
 					//{
@@ -394,7 +394,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 				if (starlightWaterActor.windDown > 0)
 				{
-					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedByRandom(6.28f) * 16 * starlightWaterActor.windDown / 240f, DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-2, -4), 0, new Color(0, Main.rand.Next(255), 255), 1);
+					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedByRandom(6.28f) * 16 * starlightWaterActor.windDown / 240f, DustType<Dusts.SparkleStar>(), Vector2.UnitY * Main.rand.NextFloat(-2, -4), 0, new Color(0, Main.rand.Next(255), 255), 1);
 					d.customData = Main.rand.NextFloat(0.2f, 0.3f) * starlightWaterActor.windDown / 240f;
 
 					Lighting.AddLight(Item.Center, new Vector3(10, 13, 25) * 0.08f * starlightWaterActor.windDown / 240f);
@@ -413,7 +413,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				for (int k = 0; k < 40; k++)
 				{
 					float rot = Main.rand.NextFloat(6.28f);
-					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(5));
+					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustType<Dusts.BlueSparkle>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(5));
 				}
 			}
 		}
@@ -444,9 +444,9 @@ namespace StarlightRiver.Content.NPCs.Actors
 					spriteBatch.Draw(tex, Item.Center + Vector2.UnitX * -20 - Main.screenPosition, null, new Color(100, 30 + (int)(50 * alpha3), 255) * alpha3, 0, new Vector2(tex.Width / 2, tex.Height - 15), 3f * alphaMaster, 0, 0);
 
 					float rot = Main.rand.NextFloat(6.28f);
-					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * -1.2f);
+					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustType<Dusts.BlueSparkle>(), Vector2.One.RotatedBy(rot) * -1.2f);
 
-					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * (16 + 8 * alphaMaster), DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-9, -6), 0, new Color(0, Main.rand.Next(255), 255), 1);
+					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * (16 + 8 * alphaMaster), DustType<Dusts.SparkleStar>(), Vector2.UnitY * Main.rand.NextFloat(-9, -6), 0, new Color(0, Main.rand.Next(255), 255), 1);
 					d.customData = Main.rand.NextFloat(0.2f, 0.5f) * alphaMaster;
 
 					spriteBatch.End();

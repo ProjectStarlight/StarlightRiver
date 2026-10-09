@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				float rot = 0.1f * k * direction + 3.14f;
 				var dus = Dust.NewDustPerfect(
 					prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.8f - Time / 11f),
-					DustType<AirDash>(),
+					DustType<ForbiddenWindsTrail>(),
 					Vector2.UnitX
 					);
 				dus.fadeIn = k + Time * 3;
@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			for (int k = 0; k <= 60; k++)
 			{
-				var dus = Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedBy(k / 60f * 6.28f) * Main.rand.NextFloat(50), DustType<AirLegacyWindsAnimation>(), Vector2.Zero);
+				var dus = Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedBy(k / 60f * 6.28f) * Main.rand.NextFloat(50), DustType<ForbiddenWindsCooldownDust>(), Vector2.Zero);
 				dus.customData = Player;
 			}
 

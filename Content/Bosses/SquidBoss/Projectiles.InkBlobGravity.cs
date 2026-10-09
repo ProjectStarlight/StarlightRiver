@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (Main.rand.NextBool(4))
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f);
+				var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.SparkleStarFastAnimation>(), Vector2.Zero, 0, color, 0.5f);
 				d.customData = Main.rand.NextFloat(1, 2);
 			}
 

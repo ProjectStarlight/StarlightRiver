@@ -66,9 +66,9 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				Vector2 pos = Player.Center + (Player.Center - nextPos) * k + swirlOff;
 				Vector2 vel = Player.velocity * Main.rand.NextFloat(0.1f, 0.2f) + swirlOff * Main.rand.NextFloat(0.1f, 0.14f);
 
-				int type = k == 0 ? DustType<Dusts.AuroraDecelerating>() : DustType<Dusts.Cinder>();
+				int type = k == 0 ? DustType<Dusts.SparkleStarDecelerating>() : DustType<Dusts.Cinder>();
 
-				if (type == DustType<Dusts.AuroraDecelerating>())
+				if (type == DustType<Dusts.SparkleStarDecelerating>())
 					vel *= 4;
 
 				var d = Dust.NewDustPerfect(pos, type, vel, 0, new Color(40, 230 - (int)(Time / 25f * 160), 255), Main.rand.NextFloat(0.2f, 0.4f));

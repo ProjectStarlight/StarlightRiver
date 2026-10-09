@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (Main.rand.NextBool(20))
 			{
 				Vector2 pos = position + Vector2.UnitX * Main.rand.NextFloat(64);
-				Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150, 255), 50), Main.rand.NextFloat(0.5f, 1f));
+				Dust.NewDustPerfect(pos, DustType<Dusts.SparkleStar>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150, 255), 50), Main.rand.NextFloat(0.5f, 1f));
 			}
 		}
 

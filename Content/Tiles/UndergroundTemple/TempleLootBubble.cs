@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		public override void SetStaticDefaults()
 		{
 			MinPick = int.MaxValue;
-			this.QuickSetFurniture(2, 2, DustType<Dusts.BlueStamina>(), SoundID.Drown, false, new Color(151, 151, 151));
+			this.QuickSetFurniture(2, 2, DustType<Dusts.BlueSparkle>(), SoundID.Drown, false, new Color(151, 151, 151));
 		}
 	}
 

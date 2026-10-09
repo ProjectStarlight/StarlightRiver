@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-			this.QuickSetFurniture(2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
+			this.QuickSetFurniture(2, 4, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(120, 100, 100));
 		}
 	}
 

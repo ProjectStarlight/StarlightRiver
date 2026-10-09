@@ -48,9 +48,9 @@ namespace StarlightRiver.Content.Items.Misc
 					float y = (float)Math.Sin(k + rand) * 10;
 					float rot = !Player.controlLeft ? Player.controlRight ? 1 : 0 : -1;
 
-					Dust.NewDustPerfect(Player.Center + new Vector2(0, 16), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.07f, 0, default, 1.6f);
-					Dust.NewDustPerfect(Player.Center + new Vector2(0, 32), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.09f, 0, default, 1.2f);
-					Dust.NewDustPerfect(Player.Center + new Vector2(0, 48), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.11f, 0, default, 0.8f);
+					Dust.NewDustPerfect(Player.Center + new Vector2(0, 16), DustType<Content.Dusts.OrangeSparkle>(), new Vector2(x, y).RotatedBy(rot) * 0.07f, 0, default, 1.6f);
+					Dust.NewDustPerfect(Player.Center + new Vector2(0, 32), DustType<Content.Dusts.OrangeSparkle>(), new Vector2(x, y).RotatedBy(rot) * 0.09f, 0, default, 1.2f);
+					Dust.NewDustPerfect(Player.Center + new Vector2(0, 48), DustType<Content.Dusts.OrangeSparkle>(), new Vector2(x, y).RotatedBy(rot) * 0.11f, 0, default, 0.8f);
 				}
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot);

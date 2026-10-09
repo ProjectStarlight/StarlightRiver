@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				"Glassy Sand",
 				new TileLoadData(
 					minPick: 0,
-					dustType: DustType<Content.Dusts.AirGravity>(),
+					dustType: DustType<Content.Dusts.VitricTealSparkleGravity>(),
 					hitSound: SoundID.Dig,
 					mapColor: new Color(172, 150, 105)
 				)
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				"Soft Glassy Sand",
 				new TileLoadData(
 					minPick: 0,
-					dustType: DustType<Content.Dusts.AirGravity>(),
+					dustType: DustType<Content.Dusts.VitricTealSparkleGravity>(),
 					hitSound: SoundID.Dig,
 					mapColor: new Color(162, 131, 115)
 				)

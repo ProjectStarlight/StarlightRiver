@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 6, 18, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+			QuickBlock.QuickSetFurniture(this, 6, 18, DustType<Dusts.VitricTealSparkle>(), SoundID.Shatter, false, Color.Black);
 			Main.tileLighted[Type] = true;
 		}
 

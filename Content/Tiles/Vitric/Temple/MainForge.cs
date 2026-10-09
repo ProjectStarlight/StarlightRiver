@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 19, 15, ModContent.DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black, mapName: "Vitric Forgeheart");
+			QuickBlock.QuickSetFurniture(this, 19, 15, ModContent.DustType<Dusts.VitricTealSparkle>(), SoundID.Shatter, false, Color.Black, mapName: "Vitric Forgeheart");
 			Main.tileLighted[Type] = true;
 		}
 	}

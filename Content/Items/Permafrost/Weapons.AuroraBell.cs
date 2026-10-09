@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 						float colorVel = Main.rand.NextFloat(6.28f);
 						float sin = 1 + (float)Math.Sin(colorVel);
 						float cos = 1 + (float)Math.Cos(colorVel);
-						Dust.NewDustPerfect(Projectile.Center + offset + angle.ToRotationVector2() * 20, ModContent.DustType<Dusts.Aurora>(), angle.ToRotationVector2() * Main.rand.NextFloat() * 8, 0, new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f), Main.rand.NextFloat(1.5f, 2.5f));
+						Dust.NewDustPerfect(Projectile.Center + offset + angle.ToRotationVector2() * 20, ModContent.DustType<Dusts.SparkleStar>(), angle.ToRotationVector2() * Main.rand.NextFloat() * 8, 0, new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f), Main.rand.NextFloat(1.5f, 2.5f));
 					}
 
 					var newProjMP = newProj.ModProjectile as AuroraBellRing;

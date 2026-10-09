@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.OrangeSparkle>(), SoundID.Shatter, false, new Color(255, 186, 66));
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			if (timer > 0)
 				timer--;
 			else if (Main.rand.NextBool(3))
-				Dust.NewDust(position, 16, 16, DustType<Dusts.Stamina>());
+				Dust.NewDust(position, 16, 16, DustType<Dusts.OrangeSparkle>());
 
 			Lighting.AddLight(Center, new Vector3(1, 0.4f, 0.1f) * 0.35f);
 		}
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 				CombatText.NewText(Player.Hitbox, new Color(255, 170, 60), "+1");
 
 				for (float k = 0; k <= 6.28; k += 0.1f)
-					Dust.NewDustPerfect(Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
+					Dust.NewDustPerfect(Center, DustType<Dusts.OrangeSparkle>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
 			}
 		}
 

@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(2, 3, DustType<Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, true);
+			this.QuickSetFurniture(2, 3, DustType<OrangeSparkle>(), SoundID.Shatter, false, new Color(204, 91, 50), false, true);
 			MinPick = int.MaxValue;
 		}
 

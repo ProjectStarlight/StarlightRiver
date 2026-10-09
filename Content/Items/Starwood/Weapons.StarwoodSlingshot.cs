@@ -158,9 +158,9 @@ namespace StarlightRiver.Content.Items.Starwood
 						Vector2 dustVel = direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.8f, 2);
 
 						if (empowered)
-							Dust.NewDustPerfect(player.Center + direction.RotatedBy(-0.06f) * 25, ModContent.DustType<BlueStamina>(), dustVel);
+							Dust.NewDustPerfect(player.Center + direction.RotatedBy(-0.06f) * 25, ModContent.DustType<BlueSparkle>(), dustVel);
 						else
-							Dust.NewDustPerfect(player.Center + direction.RotatedBy(-0.06f) * 25, ModContent.DustType<Stamina>(), dustVel);
+							Dust.NewDustPerfect(player.Center + direction.RotatedBy(-0.06f) * 25, ModContent.DustType<OrangeSparkle>(), dustVel);
 					}
 				}
 
@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		//These stats get scaled when empowered
 		private float ScaleMult = 1.5f;
 		private Vector3 lightColor = new(0.4f, 0.2f, 0.1f);
-		private int dustType = ModContent.DustType<Stamina>(); //already implemented
+		private int dustType = ModContent.DustType<OrangeSparkle>(); //already implemented
 		private bool empowered = false;
 		private float rotationVar = 0;
 
@@ -309,7 +309,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				Projectile.frame += 5;
 				lightColor = new Vector3(0.05f, 0.1f, 0.2f);
 				ScaleMult = 2f;
-				dustType = ModContent.DustType<BlueStamina>();
+				dustType = ModContent.DustType<BlueSparkle>();
 				Projectile.velocity *= 1.25f;//TODO: This could be on on the Item's side like the staff does, thats generally the better way
 				empowered = true;
 			}

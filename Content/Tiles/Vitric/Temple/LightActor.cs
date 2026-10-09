@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			var target = new Rectangle((int)pos.X - w / 2, (int)pos.Y, w, h);
 
 			if (Main.rand.NextBool(12))
-				Dust.NewDust(target.TopLeft(), target.Width, target.Height, ModContent.DustType<Dusts.Aurora>(), 0, -Main.rand.NextFloat(2, 5), 0, new Color(100, 200, 255) * 0.75f, Main.rand.NextFloat(0.75f));
+				Dust.NewDust(target.TopLeft(), target.Width, target.Height, ModContent.DustType<Dusts.SparkleStar>(), 0, -Main.rand.NextFloat(2, 5), 0, new Color(100, 200, 255) * 0.75f, Main.rand.NextFloat(0.75f));
 
 			for (int k = 0; k < h / 16; k++)
 			{

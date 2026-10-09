@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			TileObjectData.newTile.RandomStyleRange = 2;
 			TileObjectData.newTile.StyleHorizontal = true;
 			TileObjectData.newTile.StyleLineSkip = 2;
-			this.QuickSetFurniture(2, 11, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
+			this.QuickSetFurniture(2, 11, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
 		}
 
 		public override bool CanDrop(int i, int j)

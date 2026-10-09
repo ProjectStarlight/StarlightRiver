@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetWall(this, DustType<Dusts.Leaf>(), SoundID.Grass, 0, false, new Color(114, 65, 37));
+			QuickBlock.QuickSetWall(this, DustID.JunglePlants, SoundID.Grass, 0, false, new Color(114, 65, 37));
 		}
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

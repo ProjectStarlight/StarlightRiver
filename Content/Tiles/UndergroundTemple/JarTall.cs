@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 				if (Main.rand.NextBool(4))
 				{
-					var d = Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 211, 233), 1);
+					var d = Dust.NewDustPerfect(pos, DustType<Dusts.SparkleStar>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 211, 233), 1);
 					d.customData = Main.rand.NextFloat(0.7f, 1.1f);
 				}
 				else

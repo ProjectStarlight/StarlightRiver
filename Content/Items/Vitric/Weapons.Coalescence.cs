@@ -393,7 +393,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					if (Main.rand.NextBool(4))
 					{
 						var color = new Color(20 + (int)(Projectile.ai[1] / 4f * 100), 150, 255);
-						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
+						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
 						d.customData = Main.rand.NextFloat(0.4f, 1.5f);
 						d.fadeIn = 30;
 					}
@@ -401,7 +401,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					if (Main.rand.NextBool(2))
 					{
 						var color = new Color(20 + (int)(Projectile.ai[1] / 4f * 100), 150, 255);
-						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
+						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
 						d.customData = Main.rand.NextFloat(0.4f, 0.8f);
 						d.fadeIn = 30;
 					}
@@ -418,14 +418,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					if (Main.rand.NextBool(10))
 					{
-						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
+						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
 						d.customData = Main.rand.NextFloat(0.4f, 1.5f);
 						d.fadeIn = 30;
 					}
 
 					if (Main.rand.NextBool(5))
 					{
-						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
+						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
 						d.customData = Main.rand.NextFloat(0.4f, 0.8f);
 						d.fadeIn = 30;
 					}
@@ -460,7 +460,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 0, Projectile.Center);
 
-					var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(50, 150, 255), 1);
+					var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, new Color(50, 150, 255), 1);
 					d.customData = 3f;
 					d.rotation = Main.rand.NextFloat(6.28f);
 				}

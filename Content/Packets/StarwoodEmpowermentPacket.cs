@@ -26,12 +26,12 @@ namespace StarlightRiver.Content.Packets
 			if (!starlightPlayer.empowered)
 			{
 				for (int k = 0; k < 80; k++)//pickup sfx
-					Dust.NewDustPerfect(player.Center, DustType<BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.8f, 1.2f) * new Vector2(1f, 1.5f), 0, default, 1.5f);
+					Dust.NewDustPerfect(player.Center, DustType<BlueSparkle>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.8f, 1.2f) * new Vector2(1f, 1.5f), 0, default, 1.5f);
 			}
 			else
 			{
 				for (int k = 0; k < 40; k++)//reduced pickup sfx if its already active
-					Dust.NewDustPerfect(player.Center, DustType<BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f, 0.8f) * new Vector2(1f, 1.5f), 0, default, 1.5f);
+					Dust.NewDustPerfect(player.Center, DustType<BlueSparkle>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f, 0.8f) * new Vector2(1f, 1.5f), 0, default, 1.5f);
 			}
 
 			starlightPlayer.empowered = true;

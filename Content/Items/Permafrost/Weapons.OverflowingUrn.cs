@@ -276,7 +276,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 							float lerper = Main.rand.NextFloat();
 							Vector2 pos = Projectile.Center + (Projectile.rotation - 1.57f).ToRotationVector2() * 20 + Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-8, 8, lerper);
 							Vector2 vel = Projectile.DirectionTo(Main.MouseWorld).RotatedBy(MathHelper.Lerp(0.4f + 0.003f * freezeTimer, -(0.4f + 0.003f * freezeTimer), lerper)) * Main.rand.NextFloat(5, 40);
-							var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraFast>(), vel, 0, Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.6f));
+							var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.SparkleStarFastAnimation>(), vel, 0, Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.6f));
 							d.customData = Main.rand.NextFloat(0.6f, 1.2f);
 							d.rotation = Main.rand.NextFloat(6.28f);
 						}

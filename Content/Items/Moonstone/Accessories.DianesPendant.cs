@@ -386,7 +386,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (Main.rand.NextBool(3))
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+				var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
 				d.customData = Main.rand.NextFloat(0.6f, 1.3f);
 			}
 		}
@@ -420,7 +420,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				if (Main.rand.NextBool(6))
 				{
-					var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+					var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
 					d.customData = Main.rand.NextFloat(0.6f, 1.3f);
 				}
 

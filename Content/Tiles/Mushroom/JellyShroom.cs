@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
 			for (int k = 0; k < 35; k++)
-				Dust.NewDust(new Vector2(i, j) * 16, 16 * 7, 16 * 7, DustType<Dusts.BlueStamina>());
+				Dust.NewDust(new Vector2(i, j) * 16, 16 * 7, 16 * 7, DustType<Dusts.BlueSparkle>());
 		}
 	}
 
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 					Player.velocity.Y = -10;
 
 				for (int k = 16; k < 96; k++)
-					Dust.NewDustPerfect(position + new Vector2(k, Main.rand.Next(36)), DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
+					Dust.NewDustPerfect(position + new Vector2(k, Main.rand.Next(36)), DustType<Dusts.BlueSparkle>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
 
 				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/JellyBounce"), Player.Center);
 			}
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 				if (Main.rand.NextBool(120))
 				{
 					float off = -2 * k * k / 357 + 232 * k / 357 - 1280 / 119;
-					Dust.NewDustPerfect(position + new Vector2(k, 36 - off), DustType<Dusts.BlueStamina>(), new Vector2(0, Main.rand.NextFloat(0.4f, 0.6f)), 0, default, 0.7f);
+					Dust.NewDustPerfect(position + new Vector2(k, 36 - off), DustType<Dusts.BlueSparkle>(), new Vector2(0, Main.rand.NextFloat(0.4f, 0.6f)), 0, default, 0.7f);
 				}
 			}
 

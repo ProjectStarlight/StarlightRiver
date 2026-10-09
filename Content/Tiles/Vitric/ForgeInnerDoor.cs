@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			QuickBlock.QuickSetFurniture(this, 2, 5, DustType<Dusts.Stamina>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Forge Door");
+			QuickBlock.QuickSetFurniture(this, 2, 5, DustType<Dusts.OrangeSparkle>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Forge Door");
 		}
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				Vector2 pos = staffEndPosition + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-5f, 15f));
 				Vector2 dustVelocity = (newVelocity * Main.rand.NextFloat(0.01f, 0.1f)).RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) + player.velocity * 0.5f;
-				Dust.NewDustPerfect(pos, mp.empowered ? ModContent.DustType<Dusts.BlueStamina>() : ModContent.DustType<Dusts.Stamina>(), dustVelocity, 0, default, 1.5f);
+				Dust.NewDustPerfect(pos, mp.empowered ? ModContent.DustType<Dusts.BlueSparkle>() : ModContent.DustType<Dusts.OrangeSparkle>(), dustVelocity, 0, default, 1.5f);
 			}
 
 			return false;

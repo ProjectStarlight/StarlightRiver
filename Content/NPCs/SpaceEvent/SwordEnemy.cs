@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
 							for (int k = 0; k < 10; k++)
 							{
 								float rot = Main.rand.NextFloat(6.28f);
-								Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 60, DustType<Dusts.BlueStamina>(), Vector2.UnitX.RotatedBy(rot + 1 * NPC.direction) * Main.rand.NextFloat(7));
+								Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 60, DustType<Dusts.BlueSparkle>(), Vector2.UnitX.RotatedBy(rot + 1 * NPC.direction) * Main.rand.NextFloat(7));
 							}
 						}
 					}
