@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Hell
 {
 	internal class Misery : CursedAccessory
 	{
-		private readonly List<NPC> seenNpcs = new();
+		private readonly HashSet<NPC> seenNpcs = new();
 		private int lastPlayerDefense;
 		private float lastPlayerInnoc;
 
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			var clone = base.Clone(newEntity) as Misery;
 
-			clone.seenNpcs.AddRange(seenNpcs);
+			clone.seenNpcs.UnionWith(seenNpcs);
 			return clone;
 		}
 
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Hell
 				}
 			}
 
-			seenNpcs.RemoveAll(n => n is null || !n.active);
+			seenNpcs.RemoveWhere(n => n is null || !n.active);
 		}
 
 		private void DrawAura(Player player, SpriteBatch spriteBatch)
