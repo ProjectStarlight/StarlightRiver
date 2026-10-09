@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 				if (Main.rand.NextBool(4))
 				{
-					var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Aurora>(), Projectile.velocity.RotatedByRandom(0.1f) * 0.5f, 0, new Color(0, 100, 200) * 0.6f);
+					var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.SparkleStar>(), Projectile.velocity.RotatedByRandom(0.1f) * 0.5f, 0, new Color(0, 100, 200) * 0.6f);
 					d.customData = Main.rand.NextFloat(0.6f, 1f);
 				}
 			}
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			State = 1;
 			Projectile.friendly = false;
 
-			var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Aurora>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(40, 200, 255));
+			var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.SparkleStar>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(40, 200, 255));
 			d.customData = 1.2f;
 
 			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);

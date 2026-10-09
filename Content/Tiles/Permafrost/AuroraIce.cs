@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 					var d = Dust.NewDustPerfect(new Vector2(i, j) * 16, DustType<Dusts.Crystal>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), 0, color * Main.rand.NextFloat(1.2f, 1.5f), Main.rand.NextFloat(0.4f, 0.6f));
 					d.fadeIn = Main.rand.NextFloat(-0.1f, 0.1f);
 
-					var d2 = Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16)), DustType<Dusts.Aurora>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 100, color, 0);
+					var d2 = Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16)), DustType<Dusts.SparkleStar>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 100, color, 0);
 					d2.customData = Main.rand.NextFloat(0.25f, 0.5f);
 				}
 
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			if (Main.rand.NextBool(24))
 			{
-				var d = Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16)), DustType<Dusts.Aurora>(), Vector2.Zero, 100, color, 0);
+				var d = Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16)), DustType<Dusts.SparkleStar>(), Vector2.Zero, 100, color, 0);
 				d.customData = Main.rand.NextFloat(0.25f, 0.5f);
 			}
 		}

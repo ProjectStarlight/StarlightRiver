@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 							Vector2 pos = PlayerCenter + new Vector2(15, 15).RotatedBy(k / 4f * 6.28f);
 							Vector2 velocity = -Vector2.Normalize(Player - oldPlayer) * 0.2f;
 
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.BlueStamina>(), velocity);
+							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.BlueSparkle>(), velocity);
 						}
 					}
 				}

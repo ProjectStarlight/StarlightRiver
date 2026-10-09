@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			this.QuickSetFurniture(2, 13, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
+			this.QuickSetFurniture(2, 13, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(100, 200, 255));
 		}
 	}
 
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			this.QuickSetFurniture(2, 13, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
+			this.QuickSetFurniture(2, 13, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(100, 200, 255));
 		}
 	}
 

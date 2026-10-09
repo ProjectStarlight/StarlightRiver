@@ -179,6 +179,7 @@ namespace StarlightRiver.Content.Items.Jungle
 				if (Main.myPlayer == player.whoAmI)
 				{
 					target.life += damageDone;
+					target.life = Math.Min(target.life, target.lifeMax); //TOOD: Figure out if there is a practical way to ensure this will not double dip with a similar effect?
 					skipSendData = true;
 				}
 
@@ -196,6 +197,7 @@ namespace StarlightRiver.Content.Items.Jungle
 				if (Main.myPlayer == player.whoAmI)
 				{
 					target.life += damageDone;
+					target.life = Math.Min(target.life, target.lifeMax);
 					skipSendData = true;
 				}
 

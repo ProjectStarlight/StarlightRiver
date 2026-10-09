@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Items.RatKing
 		{
 			if (Main.rand.NextBool(30))
 			{
-				var d = Dust.NewDustPerfect(npc.Center, ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(255, 100, 100) * 0.25f, 1);
+				var d = Dust.NewDustPerfect(npc.Center, ModContent.DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, new Color(255, 100, 100) * 0.25f, 1);
 				d.customData = stacks.Count * 0.1f;
 			}
 		}

@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				"Faerie Leaves",
 				new TileLoadData(
 					minPick: 210,
-					dustType: DustType<Dusts.Leaf>(),
+					dustType: DustID.JunglePlants,
 					hitSound: SoundID.Grass,
 					mapColor: new Color(215, 180, 67),
 					dirtMerge: true,

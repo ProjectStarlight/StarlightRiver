@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					heat++;
 
 					Vector2 off = Vector2.One.RotatedByRandom(6.28f) * 20;
-					Dust.NewDustPerfect(Player.MountedCenter + (Vector2.One * 40).RotatedBy(Player.itemRotation - (Player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.Stamina>(), -off * 0.05f);
+					Dust.NewDustPerfect(Player.MountedCenter + (Vector2.One * 40).RotatedBy(Player.itemRotation - (Player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.OrangeSparkle>(), -off * 0.05f);
 				}
 
 				if (heat == MAX_HEAT - 2)

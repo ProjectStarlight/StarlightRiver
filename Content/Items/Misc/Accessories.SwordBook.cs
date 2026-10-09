@@ -286,7 +286,7 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.rand.NextBool(6))
 					{
 						var pos = Vector2.Lerp(Owner.Center, Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut), Main.rand.NextFloat());
-						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, new Color(Main.rand.Next(255), 0, Main.rand.Next(255)), Main.rand.NextFloat(0.5f, 1));
+						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.SparkleStarFastAnimation>(), Vector2.Zero, 0, new Color(Main.rand.Next(255), 0, Main.rand.Next(255)), Main.rand.NextFloat(0.5f, 1));
 					}
 
 					break;

@@ -383,7 +383,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(15, 15), ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(1, 1), 0, Color.Lerp(new Color(120, 80, 255), Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(0.35f, 0.65f));
-			Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(15, 15), ModContent.DustType<Dusts.Aurora>(), Main.rand.NextVector2Circular(1, 1), 0, Color.Lerp(new Color(120, 80, 255), Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(0.35f, 0.65f));
+			Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(15, 15), ModContent.DustType<Dusts.SparkleStar>(), Main.rand.NextVector2Circular(1, 1), 0, Color.Lerp(new Color(120, 80, 255), Color.White, Main.rand.NextFloat()), Main.rand.NextFloat(0.35f, 0.65f));
 
 			rockRotationSpeed = 0.35f;
 

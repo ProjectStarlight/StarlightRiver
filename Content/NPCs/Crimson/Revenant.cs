@@ -611,12 +611,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			Texture2D texGlow = Assets.NPCs.Crimson.RevenantGlow.Value;
 			Texture2D indi = Assets.NPCs.Crimson.DepressorChain.Value;
 
-			int offsetAmount = 10;
-
-			int frameY = 0; // (int)(Timer / 10f) % 3;
-
-			/*if (State > 0)
-				frameY += 3;*/
+			int frameY = 0;
 
 			if (NPC.IsABestiaryIconDummy)
 			{

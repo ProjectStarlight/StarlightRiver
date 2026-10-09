@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (!stuck)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+				var d = Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.SparkleStar>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
 				d.customData = Main.rand.NextFloat(0.6f, 1.3f);
 				d.fadeIn = 10;
 				Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f).fadeIn = 10;
@@ -422,7 +422,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, new Color(50, 50, 255), 0.4f).velocity = Vector2.Zero;
 
-			var d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<Dusts.Aurora>(), 0, 0, 0, new Color(20, 20, 100), 0.8f);
+			var d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<Dusts.SparkleStar>(), 0, 0, 0, new Color(20, 20, 100), 0.8f);
 			d.customData = Main.rand.NextFloat(0.6f, 1.3f);
 			d.fadeIn = 10;
 		}

@@ -58,7 +58,6 @@ namespace StarlightRiver.Content.Dusts
 				if (pair[0] is Color color_)
 					fadeColor = color_;
 
-
 				Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, Eases.EaseQuinticInOut(1f - lerper));
 
 				if (variant < 1 || variant > 3)

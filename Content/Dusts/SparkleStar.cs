@@ -4,7 +4,7 @@ using System;
 
 namespace StarlightRiver.Content.Dusts
 {
-	class Aurora : ModDust
+	class SparkleStar : ModDust
 	{
 		public override string Texture => AssetDirectory.Dust + "Aurora";
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Dusts
 		}
 	}
 
-	class AuroraFast : Aurora
+	class SparkleStarFastAnimation : SparkleStar
 	{
 		public override bool Update(Dust dust)
 		{
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Dusts
 		}
 	}
 
-	class AuroraDecelerating : Aurora
+	class SparkleStarDecelerating : SparkleStar
 	{
 		public override bool Update(Dust dust)
 		{
@@ -68,11 +68,11 @@ namespace StarlightRiver.Content.Dusts
 		}
 	}
 
-	class AuroraSuction : Aurora
+	class SparkleStarMagnetized : SparkleStar
 	{
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			var col = Vector3.Lerp(dust.color.ToVector3(), Color.White.ToVector3(), dust.scale / (dust.customData is null ? 0.5f : ((AuroraSuctionData)dust.customData).scale));
+			var col = Vector3.Lerp(dust.color.ToVector3(), Color.White.ToVector3(), dust.scale / (dust.customData is null ? 0.5f : ((SparkleStarMagnetizedData)dust.customData).scale));
 			return new Color(col.X, col.Y, col.Z) * ((255 - dust.alpha) / 255f);
 		}
 
@@ -82,17 +82,17 @@ namespace StarlightRiver.Content.Dusts
 
 			Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
 
-			dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : ((AuroraSuctionData)dust.customData).scale) * 0.2f;
+			dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : ((SparkleStarMagnetizedData)dust.customData).scale) * 0.2f;
 			Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.06f) * 50 * dust.scale;
 
 			dust.rotation += 0.06f;
 			dust.position += currentCenter - nextCenter;
 
 			dust.fadeIn--;
-			if (dust.customData is null || ((AuroraSuctionData)dust.customData).actor.targetItem is null)
+			if (dust.customData is null || ((SparkleStarMagnetizedData)dust.customData).actor.targetItem is null)
 				dust.position += dust.velocity * 0.25f;
 			else
-				dust.position += Vector2.Normalize(((AuroraSuctionData)dust.customData).actor.targetItem.Center - dust.position) * 1.5f;
+				dust.position += Vector2.Normalize(((SparkleStarMagnetizedData)dust.customData).actor.targetItem.Center - dust.position) * 1.5f;
 
 			dust.shader?.UseColor(dust.color);
 
@@ -102,12 +102,12 @@ namespace StarlightRiver.Content.Dusts
 		}
 	}
 
-	struct AuroraSuctionData
+	struct SparkleStarMagnetizedData
 	{
 		public readonly StarlightWaterActor actor;
 		public readonly float scale;
 
-		public AuroraSuctionData(StarlightWaterActor actor, float scale)
+		public SparkleStarMagnetizedData(StarlightWaterActor actor, float scale)
 		{
 			this.actor = actor;
 			this.scale = scale;

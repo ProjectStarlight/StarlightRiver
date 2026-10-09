@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			Main.tileLighted[Type] = true;
 
 			RegisterItemDrop(ItemType<StaminaOrbItem>());
-			DustType = DustType<Dusts.Stamina>();
+			DustType = DustType<Dusts.OrangeSparkle>();
 			AddMapEntry(new Color(255, 186, 66));
 		}
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			else
 			{
 				float rot = Main.rand.NextFloat(0, 6.28f);
-				Dust.NewDustPerfect(Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
+				Dust.NewDustPerfect(Center, DustType<Dusts.OrangeSparkle>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			CombatText.NewText(Player.Hitbox, new Color(255, 170, 60), "+1");
 
 			for (float k = 0; k <= 6.28; k += 0.1f)
-				Dust.NewDustPerfect(Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
+				Dust.NewDustPerfect(Center, DustType<Dusts.OrangeSparkle>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
 		}
 	}
 

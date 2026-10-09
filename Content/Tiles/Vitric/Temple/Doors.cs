@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			this.QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+			this.QuickSetFurniture(1, 7, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
 		}
 
 		public override void MouseOver(int i, int j)
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			this.QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+			this.QuickSetFurniture(1, 7, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			this.QuickSetFurniture(1, 5, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+			this.QuickSetFurniture(1, 5, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)

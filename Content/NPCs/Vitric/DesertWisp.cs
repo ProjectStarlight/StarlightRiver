@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			AbilityHandler mp = Player.GetHandler();
 			Vector2 distance = Player.Center - NPC.Center;
 
-			Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Air>(), Vector2.Zero);
+			Dust.NewDustPerfect(NPC.Center, DustType<Dusts.VitricTealSparkle>(), Vector2.Zero);
 
 			if (distance.Length() <= 180 || Main.dayTime)
 				NPC.ai[3] = 1;

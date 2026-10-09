@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		//These stats get scaled when empowered
 		private int ScaleMult = 2;
 		private Vector3 lightColor = new(0.4f, 0.2f, 0.1f);
-		private int dustType = DustType<Dusts.Stamina>();
+		private int dustType = DustType<Dusts.OrangeSparkle>();
 		private bool empowered = false;
 
 		private const int MaxTimeLeft = 1200;
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					Projectile.frame = 1;
 					lightColor = new Vector3(0.1f, 0.2f, 0.4f);
 					ScaleMult = 3;
-					dustType = DustType<Dusts.BlueStamina>();
+					dustType = DustType<Dusts.BlueSparkle>();
 					empowered = true;
 				}
 			}

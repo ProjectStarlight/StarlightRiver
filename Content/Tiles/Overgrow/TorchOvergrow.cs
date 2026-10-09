@@ -34,13 +34,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.BlueStamina>(), SoundID.Tink, false, Color.Teal);
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.BlueSparkle>(), SoundID.Tink, false, Color.Teal);
 			TileID.Sets.FramesOnKillWall[Type] = true;
 		}
 
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 		{
-			Dust.NewDustPerfect(new Vector2(8 + i * 16, 2 + j * 16), DustType<Dusts.BlueStamina>(), new Vector2((float)Math.Sin(StarlightWorld.visualTimer * 2 + i * j) * 0.3f, -0.6f), 0, default, 1.5f);
+			Dust.NewDustPerfect(new Vector2(8 + i * 16, 2 + j * 16), DustType<Dusts.BlueSparkle>(), new Vector2((float)Math.Sin(StarlightWorld.visualTimer * 2 + i * j) * 0.3f, -0.6f), 0, default, 1.5f);
 			Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(110, 200, 225) * 0.004f);
 		}
 	}

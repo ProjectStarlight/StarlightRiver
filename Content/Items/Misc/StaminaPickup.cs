@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
 			mp.Stamina++;
 
 			for (int k = 0; k <= 20; k++)
-				Dust.NewDust(Player.Center, 1, 1, DustType<Dusts.Stamina>(), 0, 0, 0, default, 1.2f);
+				Dust.NewDust(Player.Center, 1, 1, DustType<Dusts.OrangeSparkle>(), 0, 0, 0, default, 1.2f);
 			CombatText.NewText(Player.Hitbox, new Color(255, 170, 60), "+1");
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, Player.Center);
 			return false;

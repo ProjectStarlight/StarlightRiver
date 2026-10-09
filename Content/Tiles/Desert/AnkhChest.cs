@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 				for (int k = 0; k <= 10; k++)
 				{
 					Dust.NewDustPerfect(Center, ModContent.DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Center, ModContent.DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Center, ModContent.DustType<Dusts.VitricTealSparkle>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 
 				active = false;

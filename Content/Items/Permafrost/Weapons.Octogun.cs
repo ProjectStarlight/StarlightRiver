@@ -403,7 +403,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (Main.rand.NextBool(3) && Projectile.timeLeft < 475 && Projectile.penetrate == 2)
 			{
-				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f).
+				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.SparkleStarFastAnimation>(), Vector2.Zero, 0, color, 0.5f).
 					customData = Main.rand.NextFloat(0.25f, 0.75f);
 			}
 
@@ -469,7 +469,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			for (int i = 0; i < (Tiny ? 13 : 18); i++)
 			{
-				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.AuroraFast>(),
+				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.SparkleStarFastAnimation>(),
 					Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3.5f, 4.5f), 0, color, 0.85f).
 					customData = Main.rand.NextFloat(0.5f, 1f);
 

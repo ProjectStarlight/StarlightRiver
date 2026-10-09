@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Pickups
 				Player.controlDown = false;
 
 				float timeRel = (timer - 500) / 150f;
-				Dust.NewDust(Player.position, Player.width, Player.height, DustType<Content.Dusts.Air>(), 0, 0, 0, default, 0.3f);
+				Dust.NewDust(Player.position, Player.width, Player.height, DustType<Content.Dusts.VitricTealSparkle>(), 0, 0, 0, default, 0.3f);
 				//Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(2f).UseIntensity(100).UseDirection(new Vector2(0.005f + timeRel * 0.5f, 1 * 0.02f - timeRel * 0.02f));
 			}
 

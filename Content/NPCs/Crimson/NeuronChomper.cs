@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -91,6 +92,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					{
 						State = NeuronChomperState.Charging;
 						Timer = 0;
+						NPC.netUpdate = true;
 					}
 
 					Vector2 idleTargetPos = homePos + new Vector2(0, 64);
@@ -104,6 +106,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					{
 						State = NeuronChomperState.Idle;
 						Timer = 0;
+						NPC.netUpdate = true;
 					}
 
 					// Spawn charge up dusts
@@ -130,6 +133,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 						State = NeuronChomperState.Dashing;
 						Timer = 0;
+						NPC.netUpdate = true;
 					}
 
 					break;
@@ -155,6 +159,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						NPC.velocity *= 0;
 						State = NeuronChomperState.Idle;
 						Timer = 0;
+						NPC.netUpdate = true;
 					}
 
 					break;
@@ -291,6 +296,24 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				float rot = Main.rand.NextFloat(6.28f);
 				Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(20), ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(3));
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(homePos.X);
+			writer.Write(homePos.Y);
+
+			writer.Write(targetPos.X);
+			writer.Write(targetPos.Y);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			homePos.X = reader.ReadSingle();
+			homePos.Y = reader.ReadSingle();
+
+			targetPos.X = reader.ReadSingle();
+			targetPos.Y = reader.ReadSingle();
 		}
 	}
 }

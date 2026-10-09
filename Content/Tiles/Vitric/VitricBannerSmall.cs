@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
+			this.QuickSetFurniture(1, 1, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(120, 100, 100));
 		}
 	}
 

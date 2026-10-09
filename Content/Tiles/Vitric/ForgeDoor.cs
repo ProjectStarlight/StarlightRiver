@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			QuickBlock.QuickSetFurniture(this, 2, 6, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Forge Door");
+			QuickBlock.QuickSetFurniture(this, 2, 6, DustType<Dusts.VitricTealSparkle>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Forge Door");
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)

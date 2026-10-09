@@ -376,6 +376,10 @@ namespace StarlightRiver.Content.Items.Magnet
 			GrayGooMetaballs.visible = true;
 
 			var data = (GrayGooDustData)dust.customData;
+
+			if (data is null)
+				return false;
+
 			if (!data.proj.active)
 			{
 				dust.active = false;

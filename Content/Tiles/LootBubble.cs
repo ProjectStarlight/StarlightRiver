@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles
 			//Terraria.Audio.SoundEngine.PlaySound( , origin);
 
 			for (int k = 0; k < 50; k++)
-				Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
+				Dust.NewDustPerfect(origin, DustType<Dusts.BlueSparkle>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
 		}
 
 		public virtual bool CanOpen(Player Player)

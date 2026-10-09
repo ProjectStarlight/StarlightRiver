@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					for (int n = 0; n < 2; n++)
 					{
 						Vector2 vel = Vector2.Normalize(NPC.Center + off - (NPC.Center + Vector2.UnitY * 100)).RotatedByRandom(0.4f) * Main.rand.NextFloat(5, 20);
-						var d = Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.AuroraFast>(), vel, 0, Color.Lerp(Color.Red, Color.Yellow, Main.rand.NextFloat(0.3f, 0.8f)));
+						var d = Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.SparkleStarFastAnimation>(), vel, 0, Color.Lerp(Color.Red, Color.Yellow, Main.rand.NextFloat(0.3f, 0.8f)));
 						d.customData = Main.rand.NextFloat(1, 2);
 					}
 				}
@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					for (int n = 0; n < 100; n++)
 					{
 						var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-						Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6) + Vector2.UnitY * -8, 0, Color.White, 2);
+						Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.OrangeSparkle>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6) + Vector2.UnitY * -8, 0, Color.White, 2);
 					}
 
 					for (int n = 0; n < 100; n++)

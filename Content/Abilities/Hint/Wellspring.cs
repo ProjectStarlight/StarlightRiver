@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			if (Main.rand.NextBool(10))
 			{
-				int d = Dust.NewDust(Projectile.position, 32, 32, ModContent.DustType<Dusts.Aurora>(), 0, -1, 0, new Color(200, 220, 255), 1);
+				int d = Dust.NewDust(Projectile.position, 32, 32, ModContent.DustType<Dusts.SparkleStar>(), 0, -1, 0, new Color(200, 220, 255), 1);
 				Main.dust[d].customData = Main.rand.NextFloat(0.3f, 0.6f);
 			}
 		}

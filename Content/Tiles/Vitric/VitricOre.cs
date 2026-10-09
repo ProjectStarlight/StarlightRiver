@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				for (int k = 0; k <= 10; k++)
 				{
 					Dust.NewDustPerfect(Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Center, DustType<VitricTealSparkle>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 			}
 		}
@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				for (int k = 0; k <= 10; k++)
 				{
 					Dust.NewDustPerfect(Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Center, DustType<VitricTealSparkle>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 			}
 		}

@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			MinPick = 200;
 			RegisterItemDrop(ItemType<AncientSandstoneTorchItem>());
-			DustType = DustType<Dusts.Air>();
+			DustType = DustType<Dusts.VitricTealSparkle>();
 			AddMapEntry(new Color(115, 182, 158));
 		}
 

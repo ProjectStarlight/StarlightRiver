@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			path: AssetDirectory.VitricTile + "Decoration/",
 			color: new Color(140, 97, 86),
 			glowColor: new Color(255, 220, 150),
-			dust: DustType<Dusts.Air>(),
+			dust: DustType<Dusts.VitricTealSparkle>(),
 			material: ItemType<Content.Items.Vitric.SandstoneChunk>())
 		{ }
 	}
