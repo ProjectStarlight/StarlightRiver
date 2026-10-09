@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class VitricTealSparkle : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		public override string Texture => AssetDirectory.Dust + "Air";
 
 		public override void OnSpawn(Dust dust)
 		{

@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 						for (int k = 0; k < 5; k++)
 						{
 							Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(NPC.width / 2),
-								DustType<Dusts.GreyLeaf>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, new Color(210, 200, 255), Main.rand.NextFloat(1.0f, 1.3f));
+								DustID.CorruptPlants, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, new Color(210, 200, 255), Main.rand.NextFloat(1.0f, 1.3f));
 						}
 					}
 

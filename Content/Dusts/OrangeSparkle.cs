@@ -2,7 +2,7 @@
 {
 	public class OrangeSparkle : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		public override string Texture => AssetDirectory.Dust + "Stamina";
 
 		public override void OnSpawn(Dust dust)
 		{

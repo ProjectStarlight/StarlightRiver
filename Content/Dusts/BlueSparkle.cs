@@ -2,7 +2,7 @@
 {
 	public class BlueSparkle : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		public override string Texture => AssetDirectory.Dust + "BlueStamina";
 		public override void OnSpawn(Dust dust)
 		{
 			dust.velocity *= 0.3f;
