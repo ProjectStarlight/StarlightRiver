@@ -19,12 +19,12 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Mind crusher");
-			Tooltip.SetDefault("Click and hold to create a growing circle\nRelease to crush all enemies inside the circle\nEnemies with defense take 2 additional damage per defense\nInflicts 5 stacks of {{BUFF:Neurosis}}");
+			Tooltip.SetDefault("Click and hold to create a growing circle\nRelease to crush all enemies inside the circle\nEnemies with defense take 2 additional damage per defense, up to 100\nInflicts 5 stacks of {{BUFF:Neurosis}}");
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 55;
+			Item.damage = 65;
 			Item.DamageType = DamageClass.Magic;
 			Item.width = 32;
 			Item.height = 32;
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.shootSpeed = 0f;
 			Item.useTurn = true;
 			Item.channel = true;
-			Item.mana = 100;
+			Item.mana = 70;
 			Item.noUseGraphic = true;
 		}
 
@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.defense > 0)
-				modifiers.FinalDamage.Flat += target.defense * 2;
+				modifiers.FinalDamage.Flat += Math.Min(100, target.defense * 2);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

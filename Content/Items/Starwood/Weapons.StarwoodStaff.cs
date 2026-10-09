@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void SetDefaults()
 		{
-			Item.damage = 8;
+			Item.damage = 7;
 			Item.DamageType = DamageClass.Magic;
 			Item.mana = 10;
 			Item.width = 18;
