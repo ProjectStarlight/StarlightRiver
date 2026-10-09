@@ -1,13 +1,32 @@
+using Microsoft.Xna.Framework.Audio;
+using ReLogic.Utilities;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using static Terraria.GameContent.Animations.IL_Actions.NPCs;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntlets : ModItem
 	{
 		public int handCounter = 0;
+		public SlotId soundSlot;
+
+		public static SoundStyle IgnitionPunchSound = new SoundStyle("StarlightRiver/Sounds/IgnitionGauntlet/Hit")
+		{
+			Volume = 0.5f,
+			PitchVariance = 0.1f,
+			MaxInstances = 6,
+			variants = SoundStyle.CreateVariants(0, 4)
+		};
+
+		public static SoundStyle IgnitionLaunchSound = new SoundStyle("StarlightRiver/Sounds/IgnitionGauntlet/Launch")
+		{
+			MaxInstances = 1,
+			variants = SoundStyle.CreateVariants(0, 2)
+		};
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -18,6 +37,8 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 							   "Hold <right> to consume charge, propelling yourself forward at escape velocity\n" +
 							   "Attack while still flying to vent remaining charge in a large blast cone\n" +
 							   "'Heroes always arrive from the skies'");
+
+
 		}
 
 		public override void SetDefaults()
@@ -57,6 +78,14 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				if (modPlayer.charge - modPlayer.potentialCharge >= 150)
 					dust.alpha += 100;
 			}
+
+			if(modPlayer.charge > 0 && soundSlot == default || !soundSlot.IsValid || !SoundEngine.TryGetActiveSound(soundSlot, out _))
+				soundSlot = SoundEngine.PlayTrackedLoopedSound(new SoundStyle("StarlightRiver/Sounds/IgnitionGauntlet/IdleLoop"), player.Center, () => player.HeldItem.type == Type && modPlayer.charge > 0);
+
+			if (SoundEngine.TryGetActiveSound(soundSlot, out var instance))
+			{
+				instance.Volume = modPlayer.charge / 150f;
+			}
 		}
 
 		public override bool AltFunctionUse(Player player)
@@ -69,7 +98,10 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			if (player.altFunctionUse == 2)
 			{
 				if (player.GetModPlayer<IgnitionPlayer>().charge > 20 && player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletCharge>()] == 0)
+				{
 					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCharge>(), damage, knockback, player.whoAmI);
+					SoundHelper.PlayPitched("IgnitionGauntlet/AltWindup", 1f, 0f, player.Center);
+				}
 
 				return false;
 			}
@@ -85,7 +117,11 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCone>(), (int)(damage * 4 * damagelerper), knockback, player.whoAmI, 1);
 
-					//damagelerper = (float)Math.Sqrt(damagelerper);
+					if(Main.rand.NextBool())
+						SoundHelper.PlayPitched("IgnitionGauntlet/ChargedExplosion", 1f, 0f, player.Center);
+					else
+						SoundHelper.PlayPitched("IgnitionGauntlet/ChargedExplosionAlt", 1f, 0f, player.Center);
+
 					damagelerper = 1;
 
 					modPlayer.loadedCharge = 20;
@@ -177,6 +213,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		public float acceleration;
 
 		private int rotationCounter = 0;
+		private SlotId soundSlot;
 
 		public override void PreUpdate() //TODO: some rotdifference shenanagins here to make the rotation transition smoother
 		{
@@ -233,6 +270,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 					if (Player.DirectionTo(Main.MouseWorld).LengthSquared() != 0)
 						Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20 * (float)Math.Sqrt(lerper), 0.15f * acceleration);
+
+					if(soundSlot == default || !soundSlot.IsValid || !SoundEngine.TryGetActiveSound(soundSlot, out _))
+						soundSlot = SoundEngine.PlayTrackedLoopedSound(new SoundStyle("StarlightRiver/Sounds/IgnitionGauntlet/RocketLoop"), Player.Center, () => launching && !flipping);
 				}
 
 				Player.fullRotationOrigin = Player.Size / 2;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
@@ -83,8 +84,19 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				Dust.NewDustPerfect(Projectile.Center, DustID.Torch, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
 			}
 
-			if (Owner.GetModPlayer<IgnitionPlayer>().charge < 150)
-				Owner.GetModPlayer<IgnitionPlayer>().charge += 2;
+			SoundEngine.PlaySound(IgnitionGauntlets.IgnitionPunchSound, Projectile.Center);
+
+			var mp = Owner.GetModPlayer<IgnitionPlayer>();
+
+			if (mp.charge < 150)
+			{
+				Owner.GetModPlayer<IgnitionPlayer>().charge += 5;
+				if (mp.charge >= 150)
+				{
+					mp.charge = 150;
+					SoundHelper.PlayPitched("IgnitionGauntlet/FullCharge", 1f, 0f, Owner.Center);
+				}
+			}
 
 			Projectile.penetrate += 2;
 			Projectile.timeLeft = 20;

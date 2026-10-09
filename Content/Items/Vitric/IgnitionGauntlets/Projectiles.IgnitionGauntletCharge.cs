@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
@@ -75,6 +76,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				modPlayer.charge -= charge;
 				modPlayer.loadedCharge = charge;
 				Owner.GetModPlayer<IgnitionPlayer>().launching = true;
+
+				SoundEngine.PlaySound(IgnitionGauntlets.IgnitionLaunchSound, Projectile.Center);
+
 				Projectile.active = false;
 			}
 		}
